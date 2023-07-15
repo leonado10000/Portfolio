@@ -1,0 +1,46 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <link href="{% static 'Add.css' %}" rel="stylesheet">
+</head>
+<body>
+    <form action="{% url 'add' %}" method="post">
+        <div class="Form">
+            {% csrf_token %}
+            <h1>EVENTS</h1>
+            <div class="lable_type">
+                <label for="date">Date:</label>
+                <input type="date" name="date" class="lable_contorl" >
+            </div>
+            <div class="lable_type">
+                <label for="text">Place:</label>
+                <select class="lable_contorl" name="place">
+                    <option value="Library">Library<option>
+                    <option value="BasketballCourt">BasketballCourt<option>
+                </select>
+            </div>
+            <div class="lable_type">
+                <label for="text">Photo Link:</label>
+                <input type="text" name="link" class="lable_contorl">
+            </div>
+            <div class="lable_type">
+                <label for="topic">Topic Tasks/Activities:</label>
+                <textarea id="topic" name="desc" name="Topic Tasks/Activities" rows="5" cols="40" class="lable_contorl" ></textarea>
+            </div>
+            <div class="lable_type">
+                <label for="text">Main Task:</label>
+                <input type="text" name="main" class="lable_contorl" >
+            </div>
+            <div id="Submit">
+                <input type="submit" value="Submit" class="lable_contorl">
+            </div>
+            
+        </div>
+    </form>
+    <a href="{% url 'events' %}">Events</a>
+</body>
+</html>

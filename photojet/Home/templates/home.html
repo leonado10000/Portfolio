@@ -1,0 +1,62 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="{% static 'js/Home.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/HomeMobile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Home.css' %}">
+</head>
+<body>
+    <div class="A">
+        <h1>Home</h1>
+    </div>
+    <div class="B">
+        <div class="btns" >
+            <div><button style="font-weight: bolder;" onclick="run(),toSocial()">Social Media</button></div>
+            <div><button style="font-weight: bolder;"  onclick="run(),toProject()">Projects</button></div>
+            <div><button style="font-weight: bolder;"  onclick="run()">IDK</button></div>
+        </div>
+
+        <div class="socialM" style="display: none;">
+            <div>
+                <a href="https://github.com/leonado10000"><img class="img2 G2" onmouseover="im(1)" onmouseout="out(1)" src="https://avatars.githubusercontent.com/u/106389897?s=400&u=13eea835d3fc1b366653d772d2665e95d0389f2c&v=4" alt=""></a>
+                <img class="img1 G" onmouseover="im(1)" onmouseout="out(1)"  src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png" alt="">
+            </div>
+            <div>
+                <a href="https://www.instagram.com/__curf__/">
+                <img class="img2 I2" onmouseover="im(2)" onmouseout="out(2)" src="{% static 'insta.jpg' %}" alt="">
+                </a>
+                <img class="img1 I" onmouseover="im(2)" onmouseout="out(2)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Instagram-Icon.png/1025px-Instagram-Icon.png" alt="">
+            </div>
+            <div>
+                <a href="https://www.kaggle.com/leonado10000">
+                <img class="img2 K2" onmouseover="im(3)" onmouseout="out(3)" src="https://storage.googleapis.com/kaggle-avatars/images/13164392-kg.jpg" alt="">
+                </a>
+                <img style="width: 280px;" class="img1 K" onmouseover="im(3)" onmouseout="out(3)" src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Kaggle_logo.png?20140912155123" alt="">
+            </div>
+        </div>
+
+        <div class="projects" style="display: none;">
+            <DIV>
+                <div class="Pdivl">
+                    <img onmouseover="prjover(1)" onmouseout="prjout(1)" class="Pimg limg" src="{% static 'boxer.jpg' %}" alt="">
+                </div>
+            </DIV>
+            <DIV>
+                <div class="Pdivc"><img onmouseover="prjover(2)" onmouseout="prjout(2)" class="Pimg cimg" src="{% static 'centrestraight.jpg' %}" alt=""></div>
+            </DIV>
+            <DIV>
+                <div class="Pdivr"><img onmouseover="prjover(3)" onmouseout="prjout(3)" class="Pimg rimg" src="{% static 'Cutthroat.jpg' %}" alt=""></div>
+            </DIV>
+        </div>
+    </div>
+    <div class="C">
+        <button onclick="reload()">reload</button>
+        <br>
+        Design alpha for main home page of portfolio website <br><h1>By leonado10000</h1>
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+.img1{
+    max-height: 200px;
+}
+.img2{
+    opacity: 0;
+    max-width: 200px;
+}
+.I:hover,.K:hover,.G:hover{
+    opacity: 0;
+    transition: 200ms;
+}
+.I2:hover,.K2:hover,.G2:hover{
+    transition: 200ms;
+    opacity: 1;
+}
+.socialM{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}

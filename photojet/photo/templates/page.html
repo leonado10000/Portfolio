@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        addEventListener("DOMContentLoaded", ()=>{
+            let pageID = document.querySelector("#pageID")
+        })
+        a = 0;
+        function turn(n) {
+            a = +pageID.innerHTML+1;
+            if (a>8){
+                a=1;
+            }
+            else{
+                a++;
+            }
+            a = toString(a)
+            a = `http://127.0.0.1:8000/photojets/page/${a}`;
+            // console.log(a);
+            // window.location.replace(a);
+
+            // if (n==1){
+                // pageID ++ ;
+            // }
+            // var url = $("#Url").attr("data-url");
+        }; 
+    </script>
+    <style>
+        body{
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+        }
+        #l{
+            background-color: bisque;
+        }
+        #r{
+            background-color: blueviolet;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="l">
+        <a href="{% url 'events' %}">Events</a>
+        <p id="pageID" style="display: none;">{{ data.E_id }}</p>
+        <p id="pageID" style="display: none;">{% url 'page' data.E_id %}</p>
+        <input type="hidden" id="Url" data-url="{% url 'page' data.E_id %}" />
+        <a href="{% url 'page' data.E_id %}" ></a>
+        <h2> ID : {{ data.E_id }} </h2>
+        <h1> Main: {{ data.main_topic }} </h1>
+        <h2> Date: {{ data.date }} </h2>
+        <h2> Place: {{ data.place }} </h2>
+        Description: {{ data.desc }} <br>
+
+        <form action="{% url 'page' data.E_id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="1">
+            <input type="submit" value="next" placeholder="next" />
+        </form>
+        <form action="{% url 'page' data.E_id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="0">
+            <input type="submit" value="prev" placeholder="next" />
+        </form>
+        <!-- <button href onclick="turn(1)">left<//button> -->
+        <!-- <button onclick="turn(1)">right</button> -->
+    </div>
+    <div id="r">
+        <img src="{{ data.photo_link }}" alt="{{ data }}">
+    </div>
+    
+</body>
+</html>

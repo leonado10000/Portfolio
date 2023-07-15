@@ -1,0 +1,88 @@
+body{
+    background-image:url("https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1") ;
+    background-position: center;
+    background-size:cover;
+    color:rgb(254,254,254);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+form{
+    width: 500px;
+    box-shadow: 0 0 5px white;
+    position: relative;
+    margin: 90px auto;
+    border-radius: 5px;
+    background-color: rgba(0,0,0,50%);
+    transition: 0.5s;
+    /*transform: scale(-100%,-100%);*/
+}
+form:hover{
+    box-shadow: 0px 0px 20px white;
+    /* transform: scale(1.05,1.05); */
+}
+.form{
+    padding: 50px;
+    position: relative;
+    display:block;
+    font-size: 20px;
+   
+}
+.form h1{
+    text-align: center;
+    box-shadow: 0 5px 0 white ;
+}
+.from:hover h1{
+    
+}
+
+.form .lable_type label{
+    display: block;
+    margin: 10px 0;
+}
+.lable_contorl{
+    font-size: 20px;
+    width: 400px;
+    background-color: transparent;
+    color:rgb(254,254,254);
+    outline: none;
+}
+form .form .lable_contorl{
+    border: none;
+    outline: none;
+    border-bottom:2px solid black;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+}
+/*form .form .lable_contorl:focus{
+    border: none;
+    outline: none;
+    border-bottom:2px solid white;
+    border-radius: 5px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    box-shadow: 0 0 10px black;
+}*/
+#Submit{
+    position: relative;
+    margin-top: 15px;
+    
+}
+.form #Submit input{
+    width: 100px;
+    position: relative;
+    left: 50%;
+    top: 45px;
+    transform: translate(-50%,-50%);
+    color: aliceblue;
+    background-color:rgb(238,106,1);
+    font-size: 25px;
+    transition: all 0.5s;
+}
+.form #Submit input:hover{
+    background-color: aliceblue;
+    color: rgb(238,106,1);
+}
+form .form .lable_contorl:hover{
+    box-shadow: 0 0 10px white;
+}
+option{
+    color:black;
+}

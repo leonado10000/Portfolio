@@ -1,0 +1,145 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            height: 2000px;
+            background-color: rgb(0, 0, 0);
+            -webkit-text-fill-color: rgb(3, 0, 28);
+            margin: 0;
+        }
+        #top{
+            position: fixed;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.742);
+            height: 100px;
+            width: 100%;
+        }
+        .section{
+            margin-top: 130px;
+            height: 450px;
+            background-color: rgb(255, 255, 255);
+        }
+    </style>
+</head>
+<body>
+    <!--THis part of site does not move-->
+    <div id="top">
+        <style>
+            #top-name{
+                text-shadow: 20px 20px 20px rgb(0, 0, 0);
+                -webkit-text-fill-color: azure;
+                margin-top: 20px;
+                padding-left: 60px;
+                font-size: 50px;
+                font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                font-style: italic;
+            }
+        </style>
+        <h1 id="top-name">Rahul Jangra</h1>
+    </div>
+
+    <div class="section" id="bio" onmouseover="">
+        <style>
+            #bio{
+                background-color: black;
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+            }
+            #forContent{
+                background: url("{% static 'sun.jpg'  %}");
+                background-repeat: no-repeat;
+                background-position: 45px -0px;
+                background-size: 60%;
+                grid-row: 1;
+                -webkit-text-fill-color: rgb(241, 246, 249);
+                height: 500px;
+                width: 800px;
+            }
+            #forContent-A{
+                margin-left: 400px;
+                width: 600px;
+                margin-top: 140px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 66px;
+                font-size: 4em;
+                font-weight: 100;
+                height: 150px;
+                box-shadow: 10px 0px 0px black;
+            }
+            #forContent-B{  
+                margin-top: 30px;
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                font-style: italic;
+                -webkit-text-fill-color: rgb(189, 187, 187);
+                margin-left: 550px;
+                height: 200px;
+                width: 700px;
+                font-size: .9em;
+                font-weight: 100;
+                line-height: 25px;
+            }
+            #forIMG{
+                margin-top: -150px;
+                margin-left:-50px;
+                height: 500px;
+                width: 650px;
+                overflow: hidden;
+            }
+            #imgprf{
+                height: 550px;
+            }
+        </style>
+        <div id="forIMG">
+                <img id="imgprf" src="{% static 'moon.gif' %}" alt="">
+        </div>  
+        <div id="forContent">
+            <div id="forContent-A">
+                <div id="forContent-A-A">
+                    Hii <div style="display: inline-block;font-size: 80;-webkit-text-fill-color: aquamarine;text-shadow: 2px 2px 30px rgb(255, 255, 255);">(. ❛ ᴗ ❛.)</div>, I'm a student learning CS . 
+                </div>
+            </div>
+            <div id="forContent-B">
+                <div id="forContent-B-A">
+                    <br>
+                    "I like to work on webProjects/WebApps/WevDev what have you 
+                    I'm more interested in the Inner workings of structures and organisations, like a hidden works and trade secrets jk (^.^) 
+                    In web dev it would be the backend ,deployment and maintainance parts. I also have good handle on front end."
+                </div>
+                <div class="socials">
+                    <style>
+                        .socials{
+                            text-align: right;
+                            margin-left: 500px;
+                            margin-top: 40px;
+                            width: 120px;
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr;
+                        }
+                    </style>
+                    <div><a title="Instagram"  href="https://www.instagram.com/__curf__/" ><img src="{% static 'insta.png' %}" style="height: 30px;margin-top: 5px; " alt=""></a></div>
+                    <div><a title="LinkedIn" href="https://www.linkedin.com/in/rahul-jangra-b32a2322a/" ><img src="{% static 'in.png' %}" style="height: 40px;margin-left: 5px; " alt=""></a></div>
+                    <div><a title="Reddit"  href="https://www.reddit.com/user/Junior-Salt3181"><img src="{% static 'reddit.png' %}" style="height: 50px;margin-top: -5px; " alt=""></a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section" id="skill">
+        <style>
+            #skill{
+                width: 90%;
+                border-bottom-right-radius: 35px;
+                border-top-right-radius: 35px;
+            }
+        </style>
+        
+    </div>
+    <div class="section">
+        C
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,24 @@
+body{
+    height: 3000px;
+    background-color: black;
+    /* display: grid; */
+    /* grid-template-rows: 1fr 5fr 1fr; */
+}
+#bottom{
+    background-color: aliceblue;
+    height: 250px;
+}
+#middle{
+    padding-top: 100px;
+    background-color: ivory;
+    height: 2750px;
+}
+.content{
+    height: 500px;
+    margin-top: 70px;
+    margin-bottom: 100px;
+    background-color: firebrick;
+}
+#bottom{
+    background-image: linear-gradient(0deg,darkblue 0%,skyblue 60%,lightskyblue 80%);
+}

@@ -1,0 +1,112 @@
+{% load static %}
+<style>
+    .socialM{
+        background-color:  rgb(57, 72, 103) ;
+        height: 500px;
+    }
+    #container{
+        height: 500px;
+        width: 700px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    #fit{
+        /* border-bottom: 10px solid rgb(38, 48, 67); */
+        /* border-bottom-left-radius: 45px ; */
+        /* border-bottom-right-radius: 45px ; */
+        height: 300px;
+        margin-left: 20px;
+        width: 240px;
+        background-color: transparent;
+    }
+    #imgforsocial{
+        margin-top: 50px;
+        margin-left: 20px;
+        border-radius: 30px;
+        max-width: 200px;
+    }
+    #description{
+        -webkit-text-fill-color: rgb(241, 246, 249);
+        margin-top: 50px;
+        margin-left: 160px;
+        border-bottom-left-radius: 90px ;
+        border-bottom-right-radius: 90px ;
+        height :500px;
+        width: 600px;
+        background-color: rgb(33, 42, 62);
+    }
+    #name_of{
+        overflow: auto;
+        font-size: xx-large;
+        margin-top: 40px;
+        margin-left: 50px;
+        border-radius: 60px;
+        background-color: rgb(57, 72, 103);
+        height: 80px;
+        width: 500px;
+        text-align: center;
+        display: grid;
+        grid-template-rows: 1fr 5fr;
+    }
+    #name_of_in{
+        grid-row: 2;
+        width: 500px;
+        height: 20px;
+    }
+    #body_of{
+        margin-top: 30px;
+        margin-left: 50px;
+        border-radius: 60px;
+        background-color: rgb(57, 72, 103);
+        height: 300px;
+        width: 500px;
+    }
+    #body_of_in{
+        background-color: aquamarine;
+        height: 230px;
+    }
+</style>
+
+<div class="socialM">
+
+    <div id="container">
+        <div id="fit" style="margin-top: 250px;">
+            <img id="imgforsocial"  src="{% static 'Kaggle_logo.png' %}" alt="">
+        </div>
+        <div id="fit" style="margin-top: 40px;"> 
+            <img id="imgforsocial"  src="{% static 'Instagram-Icon.png' %}" alt="">
+        </div>
+        <div id="fit" style="margin-top: 200px; ">
+            <img id="imgforsocial" src="{% static 'github.png' %}" alt="">
+        </div>
+    </div>
+
+    <div id="description">
+        <div id="name_of">
+                <div id="name_of_in">
+                    my_dispair
+                </div>
+        </div>
+        <div id="body_of">
+            <div id="body_of_in">
+
+            </div>
+        </div>
+    </div>
+    <!-- <div>
+        <a href="https://github.com/leonado10000"><img class="img2 G2" onmouseover="im(1)" onmouseout="out(1)" src="https://avatars.githubusercontent.com/u/106389897?s=400&u=13eea835d3fc1b366653d772d2665e95d0389f2c&v=4" alt=""></a>
+        <img class="img1 G" onmouseover="im(1)" onmouseout="out(1)"  src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png" alt="">
+    </div>
+    <div>
+        <a href="https://www.instagram.com/__curf__/">
+        <img class="img2 I2" onmouseover="im(2)" onmouseout="out(2)" src="{% static 'insta.jpg' %}" alt="">
+        </a>
+        <img class="img1 I" onmouseover="im(2)" onmouseout="out(2)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Instagram-Icon.png/1025px-Instagram-Icon.png" alt="">
+    </div>
+    <div>
+        <a href="https://www.kaggle.com/leonado10000">
+        <img class="img2 K2" onmouseover="im(3)" onmouseout="out(3)" src="https://storage.googleapis.com/kaggle-avatars/images/13164392-kg.jpg" alt="">
+        </a>
+        <img style="width: 280px;" class="img1 K" onmouseover="im(3)" onmouseout="out(3)" src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Kaggle_logo.png?20140912155123" alt="">
+    </div> -->
+</div>

@@ -1,0 +1,45 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css\Home2.css' %}">
+    <link rel="stylesheet" href="{% static 'css\content\social.css' %}">
+    <link rel="stylesheet" href="{% static 'css\content\bio.css' %}">
+    <script src="{% static 'js/Home2.js' %}"></script>
+
+</head>
+<body>
+    <!-- After talking with a friend proficient in front end / atleast designs -->
+    <!-- I'll be redisigning the color theme and the colors I'll be using are 
+        rgb(241, 246, 249),
+        rgb(57, 72, 103),
+        rgb(33, 42, 62)
+        rgb(155, 164, 181) -->
+    <style>
+        body{
+            background-color: aqua;
+            background-color: black;
+            background-color: aliceblue;
+        }
+        #top{
+            background-color: rgb(57, 72, 103);
+        }
+        #middle{
+            background-color: rgb(241, 246, 249);
+        }
+    </style>
+    <div id="top">{% include 'portfolio\topbar.html' %}</div>
+    <div id="middle">
+            {% include 'portfolio\content.html' %}
+    </div>
+    <div id="bottom">
+        {% include 'portfolio\bottombar.html' %}
+        This is Design Beta
+        started on 27/04/2023
+        By Leon Kennedy
+    </div>
+</body>
+</html>
