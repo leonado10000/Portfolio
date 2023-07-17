@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <style>
         body{
             height: 2000px;
-            background-color: rgb(0, 0, 0);
+            background-color: rgb(255, 255, 255);
             -webkit-text-fill-color: rgb(3, 0, 28);
             margin: 0;
         }
@@ -15,12 +16,10 @@
             position: fixed;
             top: 0;
             background-color: rgba(0, 0, 0, 0.742);
-            height: 100px;
+            height: 70px;
             width: 100%;
         }
         .section{
-            margin-top: 130px;
-            height: 450px;
             background-color: rgb(255, 255, 255);
         }
     </style>
@@ -30,9 +29,9 @@
     <div id="top">
         <style>
             #top-name{
-                text-shadow: 20px 20px 20px rgb(0, 0, 0);
+                /* text-shadow: 20px 20px 20px rgb(0, 0, 0); */
                 -webkit-text-fill-color: azure;
-                margin-top: 20px;
+                margin-top: 5px;
                 padding-left: 60px;
                 font-size: 50px;
                 font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -42,9 +41,11 @@
         <h1 id="top-name">Rahul Jangra</h1>
     </div>
 
+    <div style="background-color: black;width: 100%; height: 800px; padding-top: 100px;">
     <div class="section" id="bio" onmouseover="">
         <style>
             #bio{
+                height: 450px;
                 background-color: black;
                 display: grid;
                 grid-template-columns: 3fr 2fr;
@@ -60,9 +61,9 @@
                 width: 800px;
             }
             #forContent-A{
-                margin-left: 400px;
+                margin-left: 200px;
                 width: 600px;
-                margin-top: 140px;
+                margin-top: 100px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 line-height: 66px;
                 font-size: 4em;
@@ -71,7 +72,7 @@
                 box-shadow: 10px 0px 0px black;
             }
             #forContent-B{  
-                margin-top: 30px;
+                margin-top: 45px;
                 font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
                 font-style: italic;
                 -webkit-text-fill-color: rgb(189, 187, 187);
@@ -86,7 +87,7 @@
                 margin-top: -150px;
                 margin-left:-50px;
                 height: 500px;
-                width: 650px;
+                width: 600px;
                 overflow: hidden;
             }
             #imgprf{
@@ -126,16 +127,274 @@
                 </div>
             </div>
         </div>
+    
     </div>
+    </div>
+    <div style="width: 90%;height: 550px;margin-top: -240px;background-color: rgb(236, 236, 236);border-top-right-radius: 35px;border-bottom-right-radius: 35px;">
     <div class="section" id="skill">
         <style>
             #skill{
-                width: 90%;
-                border-bottom-right-radius: 35px;
-                border-top-right-radius: 35px;
+                margin-left: 100px;
+                background-color: transparent;
             }
         </style>
-        
+
+        <div id="s-name">
+            <style>
+                #s-name{
+                    -webkit-text-fill-color:rgb(33, 42, 62);
+                    /* text-shadow: 3px 3px 4px rgb(0, 0, 0); */
+                    font-size: 50px;
+                    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-weight: 100;
+                    padding-top: 20px;
+                    display: inline-block;
+                }
+                .skills{
+                    overflow: hidden;
+                }
+                #key{
+                    display: inline-block;
+                    font-size: 25px;
+                    margin-left: 50px;
+                    font-weight: 600;
+                    /* text-align: center; */
+                }
+                button{
+                    margin-top: 20px;
+                    height: 100px;
+                    width: 150px;
+                    background: url("{% static 'arrow.png' %}") 100% no-repeat;
+                    background-position: 55px 6px;
+                    position: absolute;
+                    right: 200px;
+                }
+            </style>
+            What I can help you with :- <p id="key"> Programming Languages </p>
+        </div>
+        <button onclick="slide(1)" style="border: 0px;">more</button>
+        <script>
+            let index = 0;
+            let names = ["Programming Languages", "Frameworks and Tools", "Libraries"]
+            addEventListener("DOMContentLoaded", function (){
+                $(".osk1").fadeOut(1);
+                $(".osk2").fadeOut(1);
+            })
+
+            function slide(n){
+                $(`.osk${index}`).fadeOut(1)
+                if (n == 0){
+                    if (index == 0){
+                        index = 2;
+                    }
+                    else{
+                        index-- ;
+                    }
+                }
+                else if (n == 1){
+                    if (index == 2){
+                        index = 0;
+                    }
+                    else{
+                        index++ ;
+                    }
+                }
+                $(`.osk${index}`).fadeIn("slow");
+                document.querySelector("#key").innerHTML = names[index];
+            }
+
+        </script>
+
+        <div style="display: grid;grid-template-columns: 1fr 1fr 1fr;">
+            <style>
+                .skills{
+                    margin-top: 30px;
+                    grid-column: 1;
+                    width: 1180px;
+                    height: 400px;
+                    /* background-color: rgba(255, 192, 203, 0.508); */
+                }
+                #sk-fra{
+                    display: grid;
+                    grid-template-columns:1fr 1fr;
+                    margin-top: 40px;
+                }
+                #sk-lan{
+                    display: grid;
+                    grid-template-columns:1fr 1fr 1fr;
+                    margin-top: 40px;
+                }
+                #sk-lib{
+                    display: grid;
+                    grid-template-columns:1fr 1fr 1fr;
+                    /* margin-top: 10px; */
+                }
+                .skillbox{
+                    /* background-color: rgb(73, 54, 57); */
+                    width: 350px;
+                    height: 200px;
+                    display: grid;
+                    grid-template-columns: 1fr 3fr;
+                }
+                #desc{
+                    font-size: 60px;
+                    margin-left: 20px;
+                    -webkit-text-fill-color: rgb(171, 195, 195);
+                    font-weight: 600;
+                }
+                #pp{
+                    margin-top: -15px;
+                    font-weight: 600;
+                    font-size: 15px;
+                    -webkit-text-fill-color: rgba(135, 135, 135, 0.811);
+                    font-family : 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+                .osk2{
+                    margin-left: -20px;
+                }
+            </style>
+            <div class="osk0" >
+            <div class="skills sk0" id="sk-lan"  >
+                <div class="skillbox">
+                    <img src="{% static 'python.png' %}" style="height: 100px;margin-top: 10px;" alt="">
+                    <div id="desc">*****
+                        <br>
+                        <p id="pp">
+                            Python : Scripted programming language, I've most experience with , through projects, courses and self learning</p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'java.png' %}" style="height: 100px;margin-top: 15px;" alt="">
+                    <div id="desc">**
+                        <br>
+                        <p id="pp">
+                            Java : Had a solid course in college and brushed up by self practice 
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'js.png' %}" style="height: 100px;margin-top: 15px;" alt="">
+                    <div id="desc">***
+                        <br>
+                        <p id="pp">
+                            JavaScript : Learned during a Web Dev course and practiced alot by making projects
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'html.png' %}" style="height: 100px;margin-top: 10px;" alt="">
+                    <div id="desc">***
+                        <br>
+                        <p id="pp">
+                            HTML : Markup Language learned during a Web Dev course and practiced alot by making projects
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'css.png' %}" style="height: 100px;margin-left: 30px;margin-right: 10px;" alt="">
+                    <div id="desc">**
+                        <br>
+                        <p id="pp">
+                            CSS : Learned during a Web Dev course and practiced alot by making projects
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'sqlite.jpg' %}" style="height: 80px;margin-top: 20px;" alt="">
+                    <div id="desc">***
+                        <br>
+                        <p id="pp">
+                            SQLite/ MySQL : structured query language, integrated as modular library with python
+                        </p>
+                    </div>
+                </div>  
+            </div>
+            </div>
+            <div class="osk1" >
+            <div class="skills sk1" id="sk-fra" >
+                <div class="skillbox" >
+                    <img src="{% static 'django.png' %}" style="width: 180px;margin-top: 20px;" alt="">
+                    <div id="desc" style="width: 340px;">****
+                        <br>
+                        <p id="pp">
+                            Django : Python a high-level Python web framework, learned during a Web Dev course and practiced making multiple projects
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'jupyter.png' %}" style="height: 100px;margin-top: 20px;" alt="">
+                    <div id="desc" style="width: 340px;">***
+                    <br>
+                    <p id="pp">
+                        Jupyter Notebook : A web-based interactive computing platform, practiced by me during data analysis, data science and machine learning projects and courses 
+                    </p>
+                </div>
+                </div>  
+                <div class="skillbox" >
+                    <img src="{% static 'git.jpg' %}" style="height: 100px;margin-top: 20px;margin-left: 30px; margin-right: 40px;" alt="">
+                    <div id="desc" style="width: 340px;">***
+                    <br>
+                    <p id="pp">
+                        GitHub : A platform and cloud-based service for software development and version control throughout courses and projects
+                    </p>
+                    </div>
+                </div>  
+            </div>
+            </div>
+            <div class="osk2" >
+            <div class="skills sk2" id="sk-lib">
+                <div class="skillbox">
+                    <img src="{% static 'pandas.png' %}" style="width: 150px;margin-top: 30px;" alt="">
+                    <div id="desc">****
+                        <br>
+                        <p id="pp">
+                            A fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'scikit.png' %}" style="width: 150px;" alt="">
+                    <div id="desc">***
+                        <br>
+                        <p id="pp">
+                            A free software machine learning library for the Python programming language
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'numpy.png' %}" style="width: 150px;margin-top: 30px;" alt="">
+                    <div id="desc">***
+                        <br>
+                        <p id="pp">
+                            A Python library used for working with arrays. It also has functions for working in domain of linear algebra, fourier transform, and matrices
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'plt.png' %}" style="width: 150px;margin-top: 30px;" alt="">
+                    <div id="desc">***
+                        <br>
+                        <p id="pp">
+                            A plotting library for the Python programming language and its numerical mathematics extension NumPy
+                        </p>
+                    </div>
+                </div>
+                <div class="skillbox">
+                    <img src="{% static 'sns.png' %}" style="width: 150px;margin-top: 30px;" alt="">
+                    <div id="desc">*
+                        <br>
+                        <p id="pp">
+                            A plotting library for the Python programming language and its numerical mathematics extension NumPy
+                        </p>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <!-- <div>
+                scores
+            </div> -->
+        </div>
+    </div>
     </div>
     <div class="section">
         C
