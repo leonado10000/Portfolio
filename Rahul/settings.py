@@ -106,12 +106,8 @@ if socket.gethostname() != 'Leo':
 else:
     DATABASES = {
         'default': {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "projectManager",
-            'USER': 'Rahul',
-            'PASSWORD': 'Rahul',
-            'PORT':'5432',
-            'HOST':'localhost'
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
