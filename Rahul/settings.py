@@ -13,17 +13,21 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import psycopg2
+import socket
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-POSTGRES_URL="postgres://default:5NW7DHvTbdEQ@ep-muddy-star-a4326164-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
-POSTGRES_PRISMA_URL="postgres://default:5NW7DHvTbdEQ@ep-muddy-star-a4326164-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require&pgbouncer=true&connect_timeout=15"
-POSTGRES_URL_NO_SSL="postgres://default:5NW7DHvTbdEQ@ep-muddy-star-a4326164-pooler.us-east-1.aws.neon.tech:5432/verceldb"
-POSTGRES_URL_NON_POOLING="postgres://default:5NW7DHvTbdEQ@ep-muddy-star-a4326164.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
-POSTGRES_USER="default"
-POSTGRES_HOST="ep-muddy-star-a4326164-pooler.us-east-1.aws.neon.tech"
-POSTGRES_PASSWORD="5NW7DHvTbdEQ"
-POSTGRES_DATABASE="verceldb"
+POSTGRES_URL=os.getenv('POSTGRES_URL')
+POSTGRES_URL_NON_POOLING=os.getenv('POSTGRES_URL_NON_POOLING')
+POSTGRES_USER=os.getenv('PGUSER')
+POSTGRES_HOST=os.getenv('POSTGRES_HOST')
+POSTGRES_PASSWORD=os.getenv('PGPASSWORD')
+POSTGRES_DATABASE=os.getenv('PGDATABASE')
+POSTGRES_URL_NO_SSL=os.getenv('POSTGRES_URL_NO_SSL')
+POSTGRES_PRISMA_URL=os.getenv('POSTGRES_PRISMA_URL')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -87,21 +91,9 @@ WSGI_APPLICATION = "Rahul.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-def test_db_connection():
-    try:
-        conn = psycopg2.connect(
-            dbname=POSTGRES_DATABASE, 
-            user=POSTGRES_USER, 
-            password=POSTGRES_PASSWORD,
-            host = POSTGRES_HOST)
-        return True
-    except Exception:
-        return False
-
-
-if test_db_connection:
+if socket.gethostname() != 'Leo':
     DATABASES = {
-            'default': {
+        'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME' : POSTGRES_DATABASE,
             'HOST': POSTGRES_HOST,
@@ -112,7 +104,6 @@ if test_db_connection:
         },
     }
 else:
-    print("<==Running on local db server==<<<  >.<")
     DATABASES = {
         'default': {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -123,6 +114,7 @@ else:
             'HOST':'localhost'
         }
     }
+
 
 
 # Password validation
