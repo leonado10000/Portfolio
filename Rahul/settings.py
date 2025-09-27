@@ -39,7 +39,12 @@ SECRET_KEY = "django-insecure-+=$dwy-vf#wx=@y$-w^$%z=dp+z%p^nurm-o_t-rj(*zul2-1@
 DEBUG = True
 
 ALLOWED_HOSTS = ['RahulJangra.vercel.app','.vercel.app','192.168.152.13','*','172.20.10.7','192.168.208.13']
-
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",      # local dev
+    "http://localhost:8000",      # local dev
+    "https://https://rahul-jangra-leonado10000.vercel.app/",
+    "https://my-frontend2.org",
+]
 
 # Application definition
 
