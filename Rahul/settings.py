@@ -45,12 +45,13 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",    
-    'blog',
+    "django.contrib.staticfiles",
+    "blog",
     "Portfolio",
-    'Anime',
-    'myProject',        
-    'core',
+    "Anime",
+    "myProject",
+    "core",
+    "CommandCenter",
 ]
 
 MIDDLEWARE = [
@@ -93,8 +94,6 @@ def test_db_connection():
             user=POSTGRES_USER, 
             password=POSTGRES_PASSWORD,
             host = POSTGRES_HOST)
-        print(conn.status)
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxx",conn)
         return True
     except Exception:
         return False
