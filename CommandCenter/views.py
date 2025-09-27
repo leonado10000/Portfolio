@@ -12,7 +12,7 @@ def index(request):
 def addrecord(request):
     if request.method == "POST":
         bronzelogs.objects.create(
-            userip=request.META.get('REMOTE_ADDR', ''),
+            userip=request.POST.get('userip', ''),
             user=request.POST.get('user', 'Anonymous'),
             actionmessage=request.POST.get('actionmessage', ''),
             source=request.POST.get('source', '')
@@ -28,6 +28,7 @@ def testrecord(request):
     res = requests.post(
         url,
         data={
+            'userip': request.META.get('REMOTE_ADDR', ''),
             'actionmessage': 'Test action',
             'source': 'Test source',
             'user': request.user.username if request.user.is_authenticated else 'Anonymous',
