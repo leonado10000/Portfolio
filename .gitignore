@@ -1,2 +1,8 @@
 # .gitignore
 .env
+all_data_utf8.csv
+json_to_csv.py
+pg_dump.sql
+all_data_utf8.json
+__pycache__
+*.pyc

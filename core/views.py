@@ -27,6 +27,10 @@ def func(request):
     })
 
 @welcoming_user
+def quests(request):
+    return render(request, "quests.html")
+
+@welcoming_user
 def WebResume(request):
     return render(request,"WebResume.html")
 

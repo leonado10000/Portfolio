@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Visitor
+from utils.bronzelogger import bronzelogger
 
 # Create your views here.
 # ======================================
@@ -61,22 +62,30 @@ def welcoming_user(view_func):
 
 
 @welcoming_user
+@bronzelogger
 def index(request):
-    n = 1
+    n = 0
     if n :
         return render(request, 'dist/index.html',{
             "certificates":certificates,
             "projects":projects_s,
             "stacks":stacks
         })
-    return render(request, 'v1/index.html')
+    return render(request, 'v3/index.html')
 
 @welcoming_user
+@bronzelogger
 def projects(request):
     return render(request, 'v1/projects.html'  , {
         "theme": {"text_color": "white", "bg_color": "#1e1e1e", "bg_border": "transparent","border_radius": "10px"}
     })
 
 @welcoming_user
+@bronzelogger
 def v2(request):
 	return render(request, 'v2/base.html')
+
+@welcoming_user
+@bronzelogger
+def v1(request):
+	return render(request, 'v1/index.html')

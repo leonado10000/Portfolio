@@ -27,7 +27,8 @@ urlpatterns = [
     path("blog/", include("blog.urls")),
     path("pj/", include("myProject.urls")),
     path("else/", include("core.urls")),
-    path("cmd/", include("CommandCenter.urls"))
+    path("cmd/", include("CommandCenter.urls")),
+    path("projects/", include("projects.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

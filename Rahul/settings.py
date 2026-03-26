@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "myProject",
     "core",
     "CommandCenter",
+    "projects",
 ]
 
 MIDDLEWARE = [
@@ -96,7 +97,7 @@ WSGI_APPLICATION = "Rahul.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-if socket.gethostname() != 'Leo':
+if socket.gethostname() != 'Leso':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
