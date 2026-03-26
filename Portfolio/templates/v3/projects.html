@@ -2,7 +2,7 @@
     <h2>Selected Projects</h2>
     <div class="projects">
 
-        <a class="card" href="http://127.0.0.1:8000/projects/codebunny">
+        <a class="card" href="{% url 'codebunny_landing' %}">
           <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475')"></div>
           <div class="card-body">
             <div class="card-title">CodeBunny</div>
@@ -10,10 +10,10 @@
           </div>
         </a>
 
-        <a class="card" href="https://school-portal-leonado10000.vercel.app/">
+        <a class="card" href="{% url 'schoolmate_landing' %}">
           <div class="card-img" style="background-image:url('https://raw.githubusercontent.com/leonado10000/school_portal/refs/heads/master/static/Schoolmate1.png')"></div>
           <div class="card-body">
-            <div class="card-title">School Grade Management System</div>
+            <div class="card-title">School Management System</div>
             <div class="card-desc">Multi-tenant Django SaaS with RBAC and large-scale query optimization.</div>
           </div>
         </a>
