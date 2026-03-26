@@ -58,7 +58,7 @@ def blog(request, topic_id=1):
             print("error ends here 5")
 
     data = Data.objects.filter(topic_obj=topic_id).order_by('-time')
-    topics = Topics.objects.all().order_by('id')
+    topics = Topics.objects.all().order_by('?')
     return render(request, 'main.html' ,{
         "data":data,
         "topics":topics,

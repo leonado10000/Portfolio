@@ -15,7 +15,6 @@
             margin: 0;
             overflow:auto; /* Change this to allow scrolling */
             color: rgb(238, 238, 238);
-            grid-template-rows: 1fr 10fr;
         }
         }
         @media (min-width:801px) {
@@ -25,7 +24,6 @@
             margin: 0;
             overflow: auto;
             color: rgb(238, 238, 238);
-            grid-template-rows: 1fr 7fr;
             }
         }
     </style>
@@ -34,6 +32,7 @@
         @media(max-width: 800px){
             #head-container{
                 padding-top: 25px;
+                padding-bottom: 50px;
                 text-align: center;
             }
             #nav-bar-option{
@@ -67,6 +66,7 @@
             #forehead{
                 display: grid;
                 grid-template-columns: 1fr 4fr;
+                padding-bottom: 25px;
             }
             #nav-bar-option{
                 text-align: center;
@@ -108,7 +108,7 @@
             <a class="a-nav" href="{% url 'ind' %}">
                 <div id="nav-bar-option">Main</div>
             </a>
-            <a class="a-nav" href="{% url 'projects' %}">
+            <a class="a-nav" href="https://i.pinimg.com/736x/45/1b/78/451b78a067553f9187093ce951f13049.jpg">
                 <div id="nav-bar-option">Ideas</div>
             </a>
             <a class="a-nav" href="{% url 'blog' topic_id %}">    

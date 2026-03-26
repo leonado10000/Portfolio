@@ -96,7 +96,7 @@ WSGI_APPLICATION = "Rahul.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-if socket.gethostname() != 'Leo':
+if socket.gethostname() != 'Leso':
     DEBUG = False
     DATABASES = {
         'default': {
