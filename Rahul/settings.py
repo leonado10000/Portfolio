@@ -36,7 +36,6 @@ POSTGRES_PRISMA_URL=os.getenv('POSTGRES_PRISMA_URL')
 SECRET_KEY = "django-insecure-+=$dwy-vf#wx=@y$-w^$%z=dp+z%p^nurm-o_t-rj(*zul2-1@"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ['RahulJangra.vercel.app','.vercel.app','192.168.152.13','*','172.20.10.7','192.168.208.13']
 CSRF_TRUSTED_ORIGINS = [
@@ -97,7 +96,8 @@ WSGI_APPLICATION = "Rahul.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-if socket.gethostname() != 'Leso':
+if socket.gethostname() != 'Leo':
+    DEBUG = False
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -110,6 +110,7 @@ if socket.gethostname() != 'Leso':
         },
     }
 else:
+    DEBUG = True
     DATABASES = {
         'default': {
             "ENGINE": "django.db.backends.sqlite3",

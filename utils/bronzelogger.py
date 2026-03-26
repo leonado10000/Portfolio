@@ -28,6 +28,9 @@ def addrecord(action_function_name, request):
         'index':'Homepage',
         'projects':'Projects page',
         'v2':'Version 2 of portfolio',
+        'v1':'Version 1 of portfolio',
+        'schoolmate_landing':'Schoolmate landing page',
+        'codebunny_landing':'Codebunny landing page',
     }
 
     source = ""
