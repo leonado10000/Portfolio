@@ -1,0 +1,13 @@
+{% include 'dist/head-dark.html' %}
+riot careers "https://www.riotgames.com/en/work-with-us/jobs#craft=software-engineering-group"
+Databricks
+Google
+Microsoft
+Amazon
+Datadog
+
+{% for company in companies %}
+    <h4>{{ company }}</h4>
+{% endfor %}
+
+{% include 'dist/foot.html' %}

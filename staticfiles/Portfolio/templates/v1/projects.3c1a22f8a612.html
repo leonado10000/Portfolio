@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CS Projects Showcase</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <style>
+    </style>
+    <div class="section" id="head-section">
+
+            {% include 'dist/head-dark.html' %}
+      
+
+
+  <header>
+    <h1>My Computer Science Projects</h1>
+    <p class="subtitle">A showcase of my work in CS</p>
+  </header>
+
+<style>  /* General Reset */
+            * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            }
+
+            /* Body Styling */
+            body {
+            background-color: #121212;
+            color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+            }
+
+            /* Header Styling */
+            header {
+            text-align: center;
+            margin-bottom: 2rem;
+            }
+
+            header h1 {
+            font-size: 2.5rem;
+            color: #ffffff;
+            }
+
+            .subtitle {
+            color: #b0b0b0;
+            margin-top: 0.5rem;
+            }
+
+            /* Project Container */
+            .project-container {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            /* Project Card */
+            .project-card {
+            background-color: #1e1e1e;
+            border-left: 5px solid #4fc3f7; /* Accent color */
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+            }
+
+            .project-card:hover {
+            transform: translateY(-5px);
+            }
+
+            .project-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            }
+
+            .project-card p {
+            color: #cccccc;
+            margin-bottom: 1rem;
+            }
+
+            .tag {
+            display: inline-block;
+            background-color: #4fc3f7;
+            color: #121212;
+            padding: 0.3rem 0.7rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            }
+</style>
+
+  <main class="project-container">
+    <div class="project-card">
+      <h2>AI Chatbot</h2>
+      <p>Built using Python and OpenAI API to respond intelligently to user queries in real-time.</p>
+      <span class="tag">Python</span>
+      <span class="tag">NLP</span>
+    </div>
+
+    <div class="project-card">
+      <h2>Personal Portfolio</h2>
+      <p>My responsive developer portfolio built with HTML, CSS, and JavaScript.</p>
+      <span class="tag">Frontend</span>
+      <span class="tag">Responsive</span>
+    </div>
+
+    <div class="project-card">
+      <h2>Project Management App</h2>
+      <p>A web app built with Django to manage tasks, deadlines, and team collaboration.</p>
+      <span class="tag">Django</span>
+      <span class="tag">CRUD</span>
+    </div>
+
+    <!-- Add more cards as needed -->
+  </main>
+</body>
+</html>

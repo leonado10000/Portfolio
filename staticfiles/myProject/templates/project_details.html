@@ -1,0 +1,154 @@
+<style>
+    @media (max-width: 800px){
+        #project-container{
+            padding-left: 3%;
+            padding-right: 3%  ;
+            display: grid;
+            
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #project{
+            margin-top: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.174);
+        }
+        .project-topic{
+            font-size: 27px;
+        }
+        #duration{
+            font-size: 15px;
+            font-weight: 100;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.4);
+        }
+        p{
+            margin: 0;
+        }
+        #project-name{
+            margin-top: 15px;
+            font-size: 23px;
+            font-weight: 100;
+            -webkit-text-fill-color: rgb(255, 250, 95);
+        }
+        .project-idea{
+            margin-left: 10px;
+            font-size: 15px;
+            font-weight: 400;
+            margin-bottom: 15px;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
+        }
+        .stack-and-resources{
+            font-weight: 100;
+            font-size: 18px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            -webkit-text-fill-color: rgb(166, 237, 255);
+        }
+        .sar-data{
+            font-size: 15px;
+            font-weight: 100;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+        }
+        #link-to{
+            text-decoration: none;
+            -webkit-text-fill-color: skyblue;
+            border-bottom: 1px solid lightblue;
+        }
+    }
+    @media (min-width: 801px){
+        #project-container{
+            padding-left: 15%;
+            padding-right: 15%  ;
+            display: grid;
+            
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #project{
+            margin-top: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.174);
+        }
+        .project-topic{
+            font-size: 27px;
+        }
+        #duration{
+            font-size: 15px;
+            font-weight: 100;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.4);
+        }
+        p{
+            margin: 0;
+        }
+        #project-name{
+            margin-top: 15px;
+            font-size: 23px;
+            font-weight: 100;
+            -webkit-text-fill-color: rgb(255, 250, 95);
+        }
+        .project-idea{
+            margin-left: 10px;
+            font-size: 15px;
+            font-weight: 400;
+            margin-bottom: 15px;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
+        }
+        .stack-and-resources{
+            font-weight: 100;
+            font-size: 18px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            -webkit-text-fill-color: rgb(166, 237, 255);
+        }
+        .sar-data{
+            font-size: 15px;
+            font-weight: 100;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+        }
+        #link-to{
+            text-decoration: none;
+            -webkit-text-fill-color: skyblue;
+            border-bottom: 1px solid lightblue;
+        }
+    }
+</style>
+<style>
+    .projects-data{
+        display: none;
+    }
+</style>
+
+{% for project in data %}
+
+    <div id="project-{{ project.id }}" class="projects-data">
+        <li id="project">
+            <div class="project-topic">
+                🎯 {{ project.projectTopic }}
+            </div>
+            <div>
+                <form action="{% url 'deleteProject' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="project-id" value="{{ project.id }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+            <p id="duration">Duration: {{ project.startDate }} - {{ project.endDate }}</p>
+            <p id="project-name"> {{ project.projectName }}</p>
+            <p class="project-idea">{{ project.projectDescription }}</p>
+    
+            <div class="stack-and-resources">Tech Stack:</div>
+            <ul class="sar-data">
+                <li>Languages: Python, JavaScript (for integration with Instagram API).</li>
+                <li>Frameworks: TensorFlow or PyTorch (for machine learning), React (for front-end).</li>
+                <li>Tools: Jupyter Notebook (for data analysis), Git (for version control).</li>
+            </ul>
+    
+            <div class="stack-and-resources">Resources:</div>
+            <ul class="sar-data">
+                <li><a id="link-to" href="https://developers.facebook.com/docs/instagram-api/">Instagram API Documentation</a></li>
+                <li>Book: "Deep Learning" by Goodfellow, Bengio, and Courville.</li>
+                <li>Online courses on machine learning and data science (e.g., Coursera, Udemy).</li>
+            </ul>
+        </li>
+    </div>
+{% endfor %}

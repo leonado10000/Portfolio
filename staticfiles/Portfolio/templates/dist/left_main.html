@@ -1,0 +1,237 @@
+{% load static %}
+<div id="main-left">
+                
+    <!-- <iframe id="profilepic" src="https://drive.google.com/file/d/1ZQ6XMBUTtR1wMuBUlmNcpOZRfhAztEaF/preview" allow="autoplay"></iframe> -->
+    <!-- <img id="profilepic" src="https://drive.usercontent.google.com/download?id=1NJdwW9-66hdmI6BSrWPnwbnis-ZfwaML&export=view&authuser=0" alt=""> -->
+    <img id="profilepic" src="https://raw.githubusercontent.com/leonado10000/Dev/refs/heads/main/pfp/me_enchanced2.png" alt="">
+    <!-- <img id="profilepic" src="{% static 'img/miles1.jpg' %}" alt=""> -->
+    <div id="m-l-container">
+        
+        <div id="name">
+            Rahul Jangra
+        </div>
+        <div id="my-data">
+            <div id="my-data-data">24</div>
+            <div id="my-data-data">CSE Grad</div>
+            <div id="my-data-data">Data Engineering / Machine Learning</div>
+            <div id="my-data-data">Agents | Backend Engineer</div>
+        </div>
+        <div id="social-data">
+            <style>
+                @media (max-width:800px){
+                    #social-data{
+                        text-align: left;
+                        /* padding-left: 10%; */
+                    }
+                    .img-social{
+                        margin-top: 20px;
+                        width: 20%;
+                        max-width: 50px;
+                        margin-right: 5%;
+                    }
+                }
+                @media (min-width:801px){
+                    #social-data{
+                        text-align: left;
+                        padding-left: 10%;
+                    }
+                    .img-social{
+                        margin-top: 20px;
+                        width: 20%;
+                        max-width: 50px;
+                        margin-right: 5%;
+                    }
+                }
+            </style>
+            <a href="https://github.com/leonado10000">
+                <img class="img-social" src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="">
+            </a>
+            <a href="https://www.linkedin.com/in/rahul-jangra-b32a2322a/">
+                <img class="img-social" src="https://img.icons8.com/?size=100&id=xuvGCOXi8Wyg&format=png" alt="">
+            </a>
+            <a href="https://www.instagram.com/_r4hul1">
+                <img class="img-social" src="https://img.icons8.com/?size=100&id=Xy10Jcu1L2Su&format=png" alt="">
+            </a>
+            <a href="https://twitter.com/rstarjangra">
+                <img class="img-social" src="https://img.icons8.com/?size=100&id=yoQabS8l0qpr&format=png" alt="">
+            </a>
+        </div>
+
+        <style>
+            #quote-fact-container {
+                margin-top: 15px;
+                padding-left: 10%;
+                padding-right: 10%;
+                font-size: 15px;
+
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                min-height: 40px;
+
+                background-color: rgba(0, 172, 181, 0.4);
+                -webkit-text-fill-color: white;
+                display: flex;
+                align-items: center;
+            }
+
+            #quote-fact {
+                margin-top: 0px;
+
+                white-space: warp;
+                overflow: hidden;
+                border-right: 1px solid rgba(255, 255, 255, 0);
+            }
+
+            #typing-bar {
+                width: 5px;
+                height: 5em;
+                background-color: rgb(255, 255, 255);
+                margin-left: 5px;
+                animation: typing 0.5s linear infinite;
+            }
+
+
+            @keyframes typing {
+            0% {
+                height: 0;
+            }
+            50% {
+                height: 10px;
+            }
+            100% {
+                height: 0;
+            }
+            }
+        </style>
+
+        <script>
+            // Define an array of random quotes and facts
+            const quotesAndFacts = [
+                "🤖 AI won’t take your job… but someone using AI will. 🧠💼",
+                "💪 Consistency > Motivation. Stay grinding! ⚡🔥",
+                "😂 ‘Bro, trust me’ — last words before a bug in production 🐞🚨",
+                "📱 Fun fact: The first iPhone came out in 2007, the same year ‘Shrek the Third’ released. 🍏📼",
+                "⚡ Elon just tweeted something weird again… 🚀🐕",
+                "🎧 Good headphones = instant productivity boost 🔊💻",
+                "📚 Did you know? The word ‘algorithm’ comes from a Persian mathematician, Al-Khwarizmi! 🔢📖",
+                "☕ Coffee: because adulting is hard. 💤➡️⚡",
+                "🏆 Winners are not people who never fail, but people who never quit! 💯",
+                "😂 Meme of the day: ‘404 Motivation Not Found’ 🚫🔥",
+                "🌍 Fun fact: Octopuses have three hearts and blue blood! 🐙💙",
+                "⌛ One day or day one — you decide. ⏳🔥",
+                "🎮 Life tip: Sometimes you need to ‘restart’ to level up. 🕹️⚡",
+            ];
+
+            function typeText(element, text, speed, callback) {
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i <= text.length) {
+                element.textContent = text.slice(0, i);
+                i++;
+                } else {
+                clearInterval(typingInterval);
+                if (callback) {
+                    setTimeout(callback, 5000);
+                }
+                }
+            }, speed);
+            }
+            function displayRandomQuoteOrFact() {
+            const container = document.getElementById("quote-fact-container");
+            const quoteFactElement = document.getElementById("quote-fact");
+            const typingBar = document.getElementById("typing-bar");
+
+            const randomIndex = Math.floor(Math.random() * quotesAndFacts.length);
+            const randomText = quotesAndFacts[randomIndex];
+
+            typingBar.style.animation = 'none';
+            void typingBar.offsetWidth;
+            typingBar.style.animation = 'typing 0.5s infinite';
+
+            typeText(quoteFactElement, randomText, 50, displayRandomQuoteOrFact);
+            }
+
+            setTimeout(displayRandomQuoteOrFact, 2000);
+
+        </script>
+
+    </div>
+    <div id="quote-fact-container">
+        <p id="quote-fact"></p>
+        <div id="typing-bar"></div>
+    </div>
+
+    <div id="ideaBox">
+        <style>
+            @media (max-width:800px) {
+                #ideaBox{
+                    margin-top: 20px;
+                    margin-left: 5%;
+                    text-align: left;
+                    
+                    width: 90%;
+                    height: 500px;
+
+                    -webkit-text-fill-color: white;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    grid-area: ideaBox;
+                    }
+                    .link-resources{
+                        -webkit-text-fill-color: rgb(140, 163, 255);
+                        font-size: 13px;
+                    }
+                    .techlink{
+
+                    }
+            }
+            @media (min-width:801px){
+                #ideaBox{
+                    margin-top: 20px;
+                    margin-left: 5%;
+                    text-align: left;
+                    
+                    width: 90%;
+                    height: 500px;
+
+                    -webkit-text-fill-color: white;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    }
+                    .link-resources{
+                        -webkit-text-fill-color: rgb(140, 163, 255);
+                        font-size: 13px;
+                    }
+            }
+        </style>
+
+
+        <div class="techlink">
+            <div>New Tech</div>
+            <ul>
+                <li><a class="link-resources" href="https://github.com/lllyasviel/Fooocus/?tab=readme-ov-file"><div>Fooocus</div></a></li>
+                <li><a class="link-resources" href="https://civitai.com/"><div>civit ai</div></a></li>
+            </ul>
+
+            <div>Github and Open Source</div>
+            <ul>
+                <li><a class="link-resources" href="https://up-for-grabs.net/#/"><div>Open-Source beggar guide</div></a></li>
+            </ul>
+        </div>
+        <div class="techlink">
+            <div>AI ML</div>
+            <ul>
+                <li><a class="link-resources" href="https://paperswithcode.com/"><div>paperswithcode</div></a></li>
+            </ul>
+            
+            <div>Projects hall of Shame</div>
+            <ul>
+                <li><a class="link-resources" href="https://nitinsingh45.github.io/Dowry-Predictor/"><div>Dowry-Predictor</div></a></li>
+                <li><a class="link-resources" href="https://github.com/commaai/openpilot"><div>Comma.ai:OpenPilot</div></a></li>
+                <li><a class="link-resources" href="https://venkateshrayudu.netify.app/"><div>Porfolio</div></a></li>
+
+                <li><a class="link-resources" href="https://nagherakrinal.wordpress.com/"><div>Personal blogs</div></a></li>
+                <li><a class="link-resources" href="https://bento.me/krinal"><div>Portfolio</div></a></li>
+                
+                
+            </ul>
+        </div>                            
+    </div>
+</div>

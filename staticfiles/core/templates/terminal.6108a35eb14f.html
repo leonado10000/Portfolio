@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Neon Terminal CLI Fullscreen + History</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+  html, body {
+    margin: 0; 
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg-color);
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-color);
+  }
+
+  #terminal {
+    box-sizing: border-box;
+    background: var(--bg-color);
+    border: 2px solid var(--bg-border);
+    border-radius: var(--border-radius);
+    width: 100vw;
+    height: 80vh;
+    padding: 20px;
+    box-shadow:
+      0 0 10px var(--text-color),
+      0 0 20px var(--text-color),
+      0 0 40px var(--text-color);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .line {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .prompt {
+    color: var(--prompt-color);
+    margin-right: 8px;
+    user-select: none;
+  }
+
+  #input-line {
+    display: flex;
+    width: 100%;
+  }
+
+  #cmdline {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1.1rem;
+    caret-color: var(--caret-color);
+  }
+
+  #cmdline::placeholder {
+    color: var(--placeholder-color);
+  }
+
+  #terminal::-webkit-scrollbar {
+    width: 10px;
+  }
+  #terminal::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  #terminal::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+
+  .output {
+    white-space: pre-wrap;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+  }
+</style>
+</head>
+<body>
+{% include 'dist/head-dark.html' %}
+<div id="terminal" aria-label="Neon Terminal CLI" role="region" tabindex="0">
+  
+  <div class="output">Welcome to Neon Terminal CLI. Type <span style="color:#ff00ff">help</span> for commands.</div>
+  <div id="input-line" class="line">
+    <span class="prompt">➜</span>
+    <input type="text" id="cmdline" autocomplete="off" autofocus spellcheck="false" placeholder="Type a command..." />
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Pass Django variables to JS
+    const themes = {{ themes_json|safe }};
+    const currentThemeName = "{{ current_theme }}";
+
+    function applyTheme(theme) {
+      const root = document.documentElement.style;
+      root.setProperty('--text-color', theme.text_color);
+      root.setProperty('--bg-color', theme.bg_color);
+      root.setProperty('--bg-border', theme.bg_border);
+      root.setProperty('--border-radius', theme.border_radius);
+      root.setProperty('--prompt-color', theme.prompt_color);
+      root.setProperty('--caret-color', theme.caret_color);
+      root.setProperty('--scrollbar-track', theme.scrollbar_track);
+      root.setProperty('--scrollbar-thumb', theme.scrollbar_thumb);
+      root.setProperty('--placeholder-color', theme.placeholder_color);
+    }
+
+    applyTheme(themes[currentThemeName] || themes['neon']);
+
+    const terminal = document.getElementById('terminal');
+    const cmdLine = document.getElementById('cmdline');
+
+    const ideasTable = `
+| Activity                   | Skill Showcased                 | Tech / Tools           |
+| -------------------------- | ------------------------------ | ---------------------- |
+| Neon Terminal CLI          | Frontend interactivity, UX      | React, JS              |
+| Glitch & Scanline Effects  | CSS Animations, WebGL           | CSS, Three.js          |
+| Hologram Project Showcase  | 3D visualization, interaction   | Three.js, React        |
+| Skill Matrix Circuit Board | Data visualization, SVG/Canvas  | D3.js, SVG, Canvas     |
+| AI Chatbot Assistant       | API integration, NLP            | React, GPT APIs        |
+| Dynamic Code Terminal      | Embedding code editors, sandbox | CodeMirror, Monaco     |
+| Augmented Reality Preview  | WebAR, 3D graphics              | AR.js, WebXR, Three.js |
+| Encrypted Message Puzzle   | Logic puzzles, crypto basics    | JS, UX Design          |
+| Retro Soundscape Sync      | Audio visualization             | Web Audio API          |
+| Data Stream Loading Anim.  | Animation design                | CSS, Canvas, WebGL     |
+`.trim();
+
+    const commands = {
+      help: `Available commands:
+- help: Show this help message
+- about: About me
+- skills: My skills
+- projects: List projects
+- ideas: Show project ideas table
+- clear: Clear the terminal
+- theme <name>: Switch theme (e.g. theme neon)`,
+
+      about: `Hi! I'm a passionate developer and creator, blending cyberpunk aesthetics with modern web tech.`,
+
+      skills: `Skills:
+- JavaScript / React / Node.js
+- Python / Machine Learning
+- CSS / Animations / WebGL
+- APIs / Cloud / DevOps`,
+
+      projects: `Projects:
+1. Neon Terminal CLI - Interactive web terminal
+2. AI Chatbot Assistant - GPT-4 powered helper
+3. Cyberpunk Portfolio - Neon themed site
+4. Idea Vault - Collaborative digital space`,
+
+      ideas: ideasTable
+    };
+
+    let history = [];
+    let historyIndex = -1;
+
+    function printOutput(text) {
+      const outputDiv = document.createElement('div');
+      outputDiv.classList.add('output');
+      outputDiv.textContent = text;
+      terminal.insertBefore(outputDiv, document.getElementById('input-line'));
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearTerminal() {
+      [...terminal.querySelectorAll('.output')].forEach(el => el.remove());
+    }
+
+    function reloadWithTheme(themeName) {
+      const url = new URL(window.location);
+      url.searchParams.set('theme', themeName);
+      window.location.href = url.toString();
+    }
+
+    cmdLine.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        const input = cmdLine.value.trim();
+        if (!input) return;
+
+        printOutput(`➜ ${input}`);
+        history.push(input);
+        historyIndex = history.length;
+
+        const parts = input.toLowerCase().split(' ');
+        if (parts[0] === 'theme') {
+          if (parts.length > 1 && themes[parts[1]]) {
+            printOutput(`Switching to theme: ${parts[1]}...`);
+            reloadWithTheme(parts[1]);
+          } else {
+            printOutput(`Available themes: ${Object.keys(themes).join(', ')}`);
+          }
+        }
+        else if (input === 'clear') {
+          clearTerminal();
+        }
+        else if (commands[input]) {
+          printOutput(commands[input]);
+        }
+        else {
+          printOutput(`Command not found: ${input}\nType 'help' to see available commands.`);
+        }
+
+        cmdLine.value = '';
+        event.preventDefault();
+      }
+      else if (event.key === 'ArrowUp') {
+        if (history.length === 0) return;
+        if (historyIndex > 0) historyIndex--;
+        cmdLine.value = history[historyIndex] || '';
+        setTimeout(() => cmdLine.setSelectionRange(cmdLine.value.length, cmdLine.value.length), 0);
+        event.preventDefault();
+      }
+      else if (event.key === 'ArrowDown') {
+        if (history.length === 0) return;
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          cmdLine.value = history[historyIndex] || '';
+        } else {
+          historyIndex = history.length;
+          cmdLine.value = '';
+        }
+        setTimeout(() => cmdLine.setSelectionRange(cmdLine.value.length, cmdLine.value.length), 0);
+        event.preventDefault();
+      }
+    });
+
+    terminal.addEventListener('click', () => {
+      cmdLine.focus();
+    });
+
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<div id="main-left">
+            
+    <img id="profilepic" src="https://i.pinimg.com/736x/dc/d8/8e/dcd88e655dbab8bbd8ee251563d3eeff.jpg" alt="">
+
+        
+        <div id="name">
+            Rahul Jangra
+        </div>
+        <div id="my-data">
+            <div id="my-data-data">⚡ 21 years old</div>
+            <div id="my-data-data">👨‍🎓 CSE 3rd Year </div>
+            <div id="my-data-data">🎓 Sir MVIT Bangalore</div>
+            <div id="my-data-data">👨🏻‍💻 CV intern <a style="-webkit-text-fill-color: rgb(140, 163, 255);" href="https://www.deepcept.ai/">@DeepceptAI</a></div>
+        </div>
+
+        <div id="social-data">
+            <style>
+                @media (max-width:800px){
+                    #social-data{
+                        text-align: left;
+                        /* padding-left: 10%; */
+                    }
+                    .img-social{
+                        margin-top: 20px;
+                        width: 20%;
+                        max-width: 50px;
+                        margin-right: 5%;
+                    }
+                }
+                @media (min-width:801px){
+                    #social-data{
+                        text-align: left;
+                        padding-left: 10%;
+                    }
+                    .img-social{
+                        margin-top: 20px;
+                        width: 20%;
+                        max-width: 50px;
+                        margin-right: 5%;
+                    }
+                }
+            </style>
+            <a href="https://www.linkedin.com/in/rahul-jangra-b32a2322a/">
+                <img class="img-social" src="https://img.icons8.com/?size=100&id=xuvGCOXi8Wyg&format=png" alt="">
+            </a>
+            <a href="https://www.instagram.com/__curf__">
+                <img class="img-social" src="https://img.icons8.com/?size=100&id=Xy10Jcu1L2Su&format=png" alt="">
+            </a>
+            <a href="https://twitter.com/rstarjangra">
+                <img class="img-social" src="https://img.icons8.com/?size=100&id=yoQabS8l0qpr&format=png" alt="">
+            </a>
+        </div>
+
+        <style>
+            #quote-fact-container {
+                margin-top: 15px;
+                padding-left: 10%;
+                padding-right: 10%;
+                font-size: 15px;
+
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                min-height: 40px;
+
+                background-color: rgba(0, 172, 181, 0.4);
+                -webkit-text-fill-color: white;
+                display: flex;
+                align-items: center;
+            }
+
+            #quote-fact {
+                margin-top: 0px;
+
+                white-space: warp;
+                overflow: hidden;
+                border-right: 1px solid rgba(255, 255, 255, 0);
+            }
+
+            #typing-bar {
+                width: 5px;
+                height: 5em;
+                background-color: rgb(255, 255, 255);
+                margin-left: 5px;
+                animation: typing 0.5s linear infinite;
+            }
+
+
+            @keyframes typing {
+            0% {
+                height: 0;
+            }
+            50% {
+                height: 10px;
+            }
+            100% {
+                height: 0;
+            }
+            }
+        </style>
+
+        <script>
+            // Define an array of random quotes and facts
+            const quotesAndFacts = [
+                "🚀 Blast off to adventure! 🌌🪐",
+                "🎨 Embrace your inner artist! 🖌️🎨",
+                "🌟 Chase your dreams! 💫✨",
+                "📅 Plan your next escapade! 🗺️✈️",
+                "🍰 Life is sweet! 🧁🍬",
+                "🐾 Explore like an animal! 🌿🌍",
+                "🌞 Let the sun shine in your heart! 🌻☀️",
+                "🎈 Be childlike, not childish! 🎈🧒",
+                "🚲 Go for a ride, feel alive! 🚴‍♀️🌄",
+                "💡 Ignite your imagination! 🌠🤯",
+                "🌈 Find magic in the mundane! ✨🌆",
+                "🛫 Adventure awaits! 🌏🌅",
+                "📖 Write your own story! 📜✍️",
+                "🍦 Savor simple joys! 🍨🎉",
+                "🌻 Bloom and grow! 🌷🌱",
+                "🎃 Spooky fun ahead! 👻🕯️",
+            ];
+
+            function typeText(element, text, speed, callback) {
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i <= text.length) {
+                element.textContent = text.slice(0, i);
+                i++;
+                } else {
+                clearInterval(typingInterval);
+                if (callback) {
+                    setTimeout(callback, 5000);
+                }
+                }
+            }, speed);
+            }
+            function displayRandomQuoteOrFact() {
+            const container = document.getElementById("quote-fact-container");
+            const quoteFactElement = document.getElementById("quote-fact");
+            const typingBar = document.getElementById("typing-bar");
+
+            const randomIndex = Math.floor(Math.random() * quotesAndFacts.length);
+            const randomText = quotesAndFacts[randomIndex];
+
+            typingBar.style.animation = 'none';
+            void typingBar.offsetWidth;
+            typingBar.style.animation = 'typing 0.5s infinite';
+
+            typeText(quoteFactElement, randomText, 50, displayRandomQuoteOrFact);
+            }
+
+            setTimeout(displayRandomQuoteOrFact, 2000);
+
+        </script>
+
+    <div id="quote-fact-container">
+        <p id="quote-fact"></p>
+        <div id="typing-bar"></div>
+    </div>
+
+
+</div>

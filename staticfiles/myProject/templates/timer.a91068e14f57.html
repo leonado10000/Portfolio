@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Question Timing Recorder with Realtime Clock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f4f4f4;
+    }
+    #container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px 20px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #start-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    #stop-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+    #log, #summary {
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    #clock {
+      font-size: 1.5rem;
+      margin-top: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h2>Manual Question Timer</h2>
+    <button id="start-btn">Start</button>
+    <button id="stop-btn" disabled>Stop</button>
+    <div id="clock">⏱️ 00:00:00</div>
+
+    <div id="log"></div>
+    <div id="summary"></div>
+  </div>
+
+  <script>
+    let startTime = null;
+    let lastTime = null;
+    let intervals = [];
+    let running = false;
+    let clockInterval = null;
+
+    const startBtn = document.getElementById("start-btn");
+    const stopBtn = document.getElementById("stop-btn");
+    const logDiv = document.getElementById("log");
+    const summaryDiv = document.getElementById("summary");
+    const clockDiv = document.getElementById("clock");
+
+    function updateClock() {
+      if (!startTime) return;
+      const now = new Date().getTime();
+      let elapsed = now - startTime;
+      const h = Math.floor(elapsed / (1000 * 60 * 60));
+      elapsed %= (1000 * 60 * 60);
+      const m = Math.floor(elapsed / (1000 * 60));
+      elapsed %= (1000 * 60);
+      const s = Math.floor(elapsed / 1000);
+      clockDiv.textContent = `⏱️ ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    startBtn.onclick = () => {
+      startTime = new Date().getTime();
+      lastTime = startTime;
+      intervals = [];
+      running = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      logDiv.innerHTML = "<strong>Recording started. Press 'F' to log next question timing.</strong>";
+      summaryDiv.innerHTML = "";
+      clockInterval = setInterval(updateClock, 500);
+    };
+
+    stopBtn.onclick = () => {
+      if (!running) return;
+      running = false;
+      const now = new Date().getTime();
+      intervals.push(now - lastTime);
+      clearInterval(clockInterval);
+      updateClock();
+      displaySummary();
+      stopBtn.disabled = true;
+    };
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key.toLowerCase() === 'f' && running) {
+        const now = new Date().getTime();
+        const interval = now - lastTime;
+        intervals.push(interval);
+        lastTime = now;
+        logDiv.innerHTML = `<strong>Recorded Q${intervals.length}: ${Math.round(interval/1000)} seconds</strong>`;
+      }
+    });
+
+    function displaySummary() {
+      let total = intervals.reduce((a, b) => a + b, 0);
+      let table = "<table><tr><th>Question #</th><th>Time Taken (seconds)</th></tr>";
+      intervals.forEach((ms, i) => {
+        table += `<tr><td>${i + 1}</td><td>${(ms / 1000).toFixed(2)}</td></tr>`;
+      });
+      table += `<tr><th>Total</th><th>${(total / 1000).toFixed(2)} seconds</th></tr></table>`;
+      summaryDiv.innerHTML = "<h3>Timing Summary</h3>" + table;
+    }
+  </script>
+</body>
+</html>

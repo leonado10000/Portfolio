@@ -1,0 +1,88 @@
+
+    <style>
+
+  
+      @media (max-width: 800px) {
+        #head-container {
+          padding-top: 25px;
+          text-align: center;
+        }
+  
+        #nav-bar-option {
+          text-align: center;
+          display: inline-block;
+  
+          -webkit-text-fill-color: {{ theme.text_color }};
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-weight: 400;
+          font-size: 15px;
+  
+          border-radius: 25px;
+          min-width: fit-content;
+  
+          margin-right: 5%;
+          padding: 5px 10px;
+          background-color: {{theme.bg_color}}; /* Light blue background */
+          border: 1px solid {{theme.bg_border}};
+        }
+  
+        .a-nav {
+          text-decoration: none;
+          transition: ease-out 300ms;
+          border-bottom: 2px solid transparent;
+        }
+      }
+  
+      @media (min-width: 801px) {
+        #head-container {
+          padding-top: 25px;
+          padding-bottom: 25px;
+          text-align: center;
+        }
+  
+        #nav-bar-option {
+          text-align: center;
+          display: inline-block;
+  
+          -webkit-text-fill-color: {{ theme.text_color }};
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-weight: 400;
+          font-size: 15px;
+  
+          border-radius: {{theme.border_radius}};
+          min-width: 100px;
+          padding: 5px 15px;
+          background-color: {{theme.bg_color}}; /* Dark gray background */
+          border: 1px solid {{theme.bg_border}};
+        }
+  
+        .a-nav {
+          margin-left: 1%;
+          text-decoration: none;
+          transition: ease-out 100ms;
+          border-bottom: 2px solid transparent;
+        }
+  
+        .a-nav:hover {
+          padding-bottom: 10px;
+          border-bottom: 2px solid {{theme.bg_color}};
+          transition: ease-in 200ms;
+        }
+      }
+    </style>
+  
+    <div id="head-container">
+      <a class="a-nav" href="{% url 'ind' %}">
+        <div id="nav-bar-option">Main</div>
+      </a>
+      <a class="a-nav" href="{% url 'projects' %}">
+        <div id="nav-bar-option">Ideas</div>
+      </a>
+      <a class="a-nav" href="{% url 'blog' 1 %}">
+        <div id="nav-bar-option">Blog</div>
+      </a>
+      <a class="a-nav" href="{% url 'else' %}">
+        <div id="nav-bar-option">Leave a comment for me</div>
+      </a>
+    </div>
+  </div>

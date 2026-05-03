@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f355.svg" type="image/x-icon">
+    <title>🍄 Project List</title>
+    <style>
+        @media (max-width: 800px){
+            body{
+                background-color: rgb(0, 0, 0);
+                -webkit-text-fill-color: rgb(255, 255, 255);
+            }
+        }
+        @media (min-width: 801px) {
+            body{
+                background-color: black;
+                -webkit-text-fill-color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="section" id="head-section">
+        <style>
+            @media(max-width: 800px){
+                #head-container{
+                    padding-top: 25px;
+                    text-align: center;
+                }
+                #nav-bar-option{
+                    text-align: center;
+                    display: inline-block;
+                    
+                    -webkit-text-fill-color: white;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-weight: 400;
+                    font-size: 15px;
+
+                    border-radius: 25px;
+                    min-width: fit-content;
+
+                    margin-right: 5%;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                }
+                .a-nav{
+                    text-decoration: none;
+                    transition: ease-out 300ms;
+                    border-bottom: 2px solid rgb(0, 0, 0);
+                }
+                .a-nav:hover{
+                    margin-top: 30px;
+                    padding-bottom: 10px;
+                    border-bottom: 2px solid teal;
+                    transition: ease-in 200ms;
+                }
+            }
+            @media(min-width: 801px){
+                #head-container{
+                    padding-top: 25px;
+                    text-align: center;
+                }
+                #nav-bar-option{
+                    text-align: center;
+                    display: inline-block;
+                    
+                    -webkit-text-fill-color: white;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-weight: 400;
+                    font-size: 15px;
+
+                    border-radius: 25px;
+                    min-width: 100px;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                }
+                .a-nav{
+                    margin-left: 1%;
+                    text-decoration: none;
+                    transition: ease-out 100ms;
+                    border-bottom: 2px solid rgb(0, 0, 0);
+                }
+                .a-nav:hover{
+                    margin-top: 30px;
+                    padding-bottom: 10px;
+                    border-bottom: 2px solid teal;
+                    transition: ease-in 200ms;
+                }
+            }
+        </style>
+        
+        
+        <div id="head-container" >
+            <a class="a-nav" href="{% url 'ind' %}">
+                <div id="nav-bar-option">Main</div>
+            </a>
+            <a class="a-nav" href="{% url 'projects' %}">
+                <div id="nav-bar-option">Projects</div>
+            </a>
+            <a  class="a-nav" href="{% url 'blog' %}">    
+                <div id="nav-bar-option">Blog</div>
+            </a>
+            <a class="a-nav" href="">    
+                <div id="nav-bar-option">Else</div>
+            </a>
+        </div>
+    </div>
+
+    <h2 style="font-style: italic;font-family: cursive;">Projects and Technology Stacks</h2>
+
+        <style>
+            @media (max-width: 800px){
+                #project-container{
+                    padding-left: 3%;
+                    padding-right: 3%  ;
+                    display: grid;
+                    
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+                #project{
+                    margin-top: 30px;
+                    padding-bottom: 20px;
+                    border-bottom: 2px solid rgba(255, 255, 255, 0.174);
+                }
+                .project-topic{
+                    font-size: 27px;
+                }
+                #duration{
+                    font-size: 15px;
+                    font-weight: 100;
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.4);
+                }
+                p{
+                    margin: 0;
+                }
+                #project-name{
+                    margin-top: 15px;
+                    font-size: 23px;
+                    font-weight: 100;
+                    -webkit-text-fill-color: rgb(255, 250, 95);
+                }
+                .project-idea{
+                    margin-left: 10px;
+                    font-size: 15px;
+                    font-weight: 400;
+                    margin-bottom: 15px;
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
+                }
+                .stack-and-resources{
+                    font-weight: 100;
+                    font-size: 18px;
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+                    font-family:Verdana, Geneva, Tahoma, sans-serif;
+                    -webkit-text-fill-color: rgb(166, 237, 255);
+                }
+                .sar-data{
+                    font-size: 15px;
+                    font-weight: 100;
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+                }
+                #link-to{
+                    text-decoration: none;
+                    -webkit-text-fill-color: skyblue;
+                    border-bottom: 1px solid lightblue;
+                }
+            }
+            @media (min-width: 801px){
+                #project-container{
+                    padding-left: 15%;
+                    padding-right: 15%  ;
+                    display: grid;
+                    
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+                #project{
+                    margin-top: 30px;
+                    padding-bottom: 20px;
+                    border-bottom: 2px solid rgba(255, 255, 255, 0.174);
+                }
+                .project-topic{
+                    font-size: 27px;
+                }
+                #duration{
+                    font-size: 15px;
+                    font-weight: 100;
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.4);
+                }
+                p{
+                    margin: 0;
+                }
+                #project-name{
+                    margin-top: 15px;
+                    font-size: 23px;
+                    font-weight: 100;
+                    -webkit-text-fill-color: rgb(255, 250, 95);
+                }
+                .project-idea{
+                    margin-left: 10px;
+                    font-size: 15px;
+                    font-weight: 400;
+                    margin-bottom: 15px;
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
+                }
+                .stack-and-resources{
+                    font-weight: 100;
+                    font-size: 18px;
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+                    font-family:Verdana, Geneva, Tahoma, sans-serif;
+                    -webkit-text-fill-color: rgb(166, 237, 255);
+                }
+                .sar-data{
+                    font-size: 15px;
+                    font-weight: 100;
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+                }
+                #link-to{
+                    text-decoration: none;
+                    -webkit-text-fill-color: skyblue;
+                    border-bottom: 1px solid lightblue;
+                }
+            }
+        </style>
+    <ul id="project-container">
+
+            <li id="project">
+                <div class="project-topic">
+                    🎯 Personalized Ad Generation
+                </div>
+                <p id="duration">Duration: 3-4 months</p>
+                <p id="project-name">Project: InstaAdapt - Personalized Instagram Ads</p>
+                <p class="project-idea">Create an AI-driven platform that generates personalized ads for Instagram users based on their likes and following list. The project will involve data analysis, machine learning, and real-time ad content personalization.</p>
+        
+                <div class="stack-and-resources">Tech Stack:</div>
+                <ul class="sar-data">
+                    <li>Languages: Python, JavaScript (for integration with Instagram API).</li>
+                    <li>Frameworks: TensorFlow or PyTorch (for machine learning), React (for front-end).</li>
+                    <li>Tools: Jupyter Notebook (for data analysis), Git (for version control).</li>
+                </ul>
+        
+                <div class="stack-and-resources">Resources:</div>
+                <ul class="sar-data">
+                    <li><a id="link-to" href="https://developers.facebook.com/docs/instagram-api/">Instagram API Documentation</a></li>
+                    <li>Book: "Deep Learning" by Goodfellow, Bengio, and Courville.</li>
+                    <li>Online courses on machine learning and data science (e.g., Coursera, Udemy).</li>
+                </ul>
+            </li>
+
+        <li id="project">
+            <div class="project-topic">
+                💻 Systems Software and Algorithms
+            </div>
+            <p id="duration">Duration: 2-3 months</p>
+            <p id="project-name">Project 1: Operating System and Algorithms</p>
+            <p class="project-idea">Develop an operating system kernel with a focus on algorithms, memory management, and process scheduling.
+                 You can combine systems software and algorithmic aspects.</p>
+
+            <div class="stack-and-resources">Stack:</div>
+            <ul class="sar-data">
+                <li>Languages: C and Assembly.</li>
+                <li>Libraries: Standard C libraries (e.g., libc).</li>
+                <li>Tools and Software: QEMU or Bochs for emulation, GCC or Clang for compiling, GDB for debugging.</li>
+            </ul>
+
+            <div class="stack-and-resources">Resources:</div>
+            <ul class="sar-data">
+                <li><a id="link-to" href="https://wiki.osdev.org/">OSDev Wiki</a></li>
+                <li>Book: "Operating System Concepts" by Silberschatz, Galvin, and Gagne.</li>
+                <li>YouTube series on OS development (e.g., <a id="link-to" href="https://www.youtube.com/user/HandmadeHero">HandmadeHero</a>).</li>
+            </ul>
+        </li>
+
+        <li id="project">
+            <div class="project-topic">
+                🖧 Networking and 🛠️ API Integration
+            </div>
+            <p id="duration">Duration: 2 months</p>
+            <p id="project-name">Project 2: Networked Application</p>
+            <p class="project-idea">Create a chat application or file transfer tool that combines networking and API integration.
+                 This project can provide practical experience in both areas.</p>
+
+            <div class="stack-and-resources">Stack:</div>
+            <ul class="sar-data">
+                <li>Language: Python.</li>
+                <li>Libraries: Python's `socket` library.</li>
+                <li>Tools and Software: Version control systems (e.g., Git), IDEs like Visual Studio Code or PyCharm.</li>
+            </ul>
+
+            <div class="stack-and-resources">Resources:</div>
+            <ul class="sar-data">
+                <li><a id="link-to" href="http://beej.us/guide/bgnet/">Beej's Guide to Network Programming</a></li>
+                <li>Python's `socket` library documentation.</li>
+            </ul>
+        </li>
+
+        <li id="project">
+            <div class="project-topic">
+                🤖 Machine Learning and 🧮 Data Science
+            </div>
+            <p id="duration">Duration: 2 months</p>
+            <p id="project-name">Project 3: Real-World ML Application</p>
+            <p class="project-idea">Develop a machine learning model that addresses a real-world problem. 
+                For instance, you can work on a sentiment analysis or image classification project using Python, TensorFlow, or PyTorch.</p>
+
+            <div class="stack-and-resources">Stack:</div>
+            <ul class="sar-data">
+                <li>Languages: Python.</li>
+                <li>Libraries: TensorFlow, PyTorch, Keras, Scikit-Learn, Pandas, Numpy.</li>
+                <li>Tools and Software: Jupyter Notebook for interactive development, Conda or virtual environments for package management.</li>
+            </ul>
+
+            <div class="stack-and-resources">Resources:</div>
+            <ul class="sar-data">
+                <li>Online machine learning courses (e.g., <a id="link-to" href="https://www.coursera.org/learn/machine-learning">Andrew Ng's Machine Learning on Coursera</a>).</li>
+                <li>Kaggle datasets and competitions (<a id="link-to" href="https://www.kaggle.com/">Kaggle</a>).</li>
+            </ul>
+        </li>
+
+        <li id="project">
+            <div class="project-topic">
+                🌐 Web Development
+            </div>
+
+            <p id="duration">Duration: 1-2 months</p>
+            <p id="project-name">Project 4: Web Application</p>
+            <p class="project-idea">Build a web application using Django for the backend and HTML, CSS, and JavaScript for the front end.
+                 Create a simple web app, portfolio site, or blog.</p>
+
+            <div class="stack-and-resources">Stack:</div>
+            <ul class="sar-data">
+                <li>Languages: Python (backend), HTML, CSS, JavaScript (frontend).</li>
+                <li>Frameworks: Django (backend).</li>
+                <li>Libraries: JavaScript libraries like React or Vue.js (frontend).</li>
+                <li>Tools and Software: Code editors like Visual Studio Code, Git for version control, Relational databases (e.g., PostgreSQL, SQLite).</li>
+            </ul>
+
+            <div class="stack-and-resources">Resources:</div>
+            <ul class="sar-data">
+                <li><a id="link-to" href="https://docs.djangoproject.com/">Django official documentation</a></li>
+                <li>Online web development tutorials (e.g., The Net Ninja's Django series on <a id="link-to" href="https://www.youtube.com/user/thenetninja">YouTube</a>).</li>
+            </ul>
+        </li>
+
+        <li id="project">
+            <div class="project-topic">
+                👨‍💻 DevOps and ⚙️ 📃 Scripting
+            </div>
+            <p id="duration">Duration: 1 month</p>
+            <p id="project-name">Project 5: Automation and Containerization</p>
+            <p class="project-idea">Learn Docker and create a Dockerized application. 
+                Also, practice scripting and automation with PowerShell or Bash.</p>
+
+            <div class="stack-and-resources">Stack:</div>
+            <ul class="sar-data">
+                <li>Languages: PowerShell or Bash for scripting.</li>
+                <li>Tools and Software: Docker for containerization, Kubernetes for orchestration, a cloud platform (e.g., AWS, Azure, GCP) for deployment and testing.</li>
+            </ul>
+
+            <div class="stack-and-resources">Resources:</div>
+            <ul class="sar-data">
+                <li>Docker and Kubernetes official documentation.</li>
+                <li>Online scripting tutorials (e.g., <a id="link-to" href="https://www.youtube.com/watch?v=0fKg7e37bQE">PowerShell Scripting Crash Course on YouTube</a>).</li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>
+
