@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>System UI — Player Status</title>
+  <!-- Bootstrap (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#07070a;
+      --panel:#0f1720;
+      --glass: rgba(255,255,255,0.02);
+      --accent:#29f0df; /* cyan */
+      --accent-2:#9b7cff; /* purple */
+      --muted:#9aa4b2;
+      --card-radius:14px;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;background:linear-gradient(180deg,#030305 0%, #07111a 60%);color:#e6eef5}
+    .container-app{max-width:1150px;margin:28px auto;padding:18px}
+    .system-header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand .logo{width:58px;height:58px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 6px 30px rgba(45,200,180,0.06);}
+    .brand .title{line-height:1}
+    .brand .title h1{margin:0;font-size:1.05rem;letter-spacing:1px}
+    .brand .title p{margin:0;color:var(--muted);font-size:0.8rem}
+
+    /* layout */
+    .layout{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:16px}
+
+    /* profile panel */
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--card-radius);padding:16px;box-shadow: 0 6px 24px rgba(0,0,0,0.6);}
+    .avatar{width:92px;height:92px;border-radius:12px;background:linear-gradient(135deg,#0ff6e0, #9b7cff);display:inline-flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#061018}
+    .stat-row{display:flex;justify-content:space-between;gap:12px;margin-top:12px}
+    .stat{flex:1}
+    .stat small{display:block;color:var(--muted);font-size:0.75rem}
+    .bar{height:8px;border-radius:999px;background:linear-gradient(90deg,#0b1320 0,#0b1320 100%);overflow:hidden;margin-top:6px}
+    .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:50%}
+    .time-online{font-family:monospace;font-weight:700;font-size:1rem}
+
+    /* quests */
+    .quests-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+    .quest{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
+    .quest .meta{flex:1}
+    .quest .title{font-weight:700}
+    .quest .tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .badge-reward{background:rgba(0,0,0,0.25);padding:6px 8px;border-radius:8px;font-weight:600}
+    .quest .actions{display:flex;flex-direction:column;gap:8px}
+    .status-pill{padding:6px 8px;border-radius:999px;font-weight:700;font-size:0.78rem}
+    .status-new{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#02121a}
+    .status-completed{background:rgba(20,110,50,0.9);color:#e6ffec}
+    .status-expired{background:rgba(120,30,20,0.9);color:#fff0f0}
+
+    /* small screens */
+    @media (max-width:768px){
+      .layout{grid-template-columns:1fr;}
+      .brand .title h1{font-size:0.95rem}
+      .avatar{width:72px;height:72px}
+    }
+
+    /* subtle neon borders */
+    .neon-border{box-shadow:0 0 20px rgba(40,240,223,0.06), inset 0 1px 0 rgba(255,255,255,0.02)}
+
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:8px}
+
+    .small-muted{font-size:0.78rem;color:var(--muted)}
+
+    /* form */
+    .form-compact input,.form-compact textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:8px;color:inherit}
+
+    /* tiny helper */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container-app">
+    <div class="system-header">
+      <div class="brand">
+        <div class="logo">PL</div>
+        <div class="title">
+          <h1>PLAYER STATUS</h1>
+          <p class="muted">Real-world gamified system UI (inspired)</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="small-muted" id="local-time">--</div>
+        <button id="toggle-online" class="btn btn-sm btn-outline-light">Go Online</button>
+        <button id="export-btn" class="btn btn-sm btn-light">Export</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- LEFT: Profile & Quick info -->
+      <aside class="panel neon-border">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="avatar" id="avatar">PJ</div>
+          <div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div style="font-weight:800;font-size:1.05rem" id="player-name">Player One</div>
+              <div class="small-muted">Lv.<span id="player-level">12</span></div>
+            </div>
+            <div class="small-muted" id="player-class">Class: Shadow Hunter</div>
+          </div>
+        </div>
+
+        <div class="stat-row" style="margin-top:14px">
+          <div class="stat">
+            <small>Strength</small>
+            <div class="bar"><i id="s-strength" style="width:55%"></i></div>
+          </div>
+          <div class="stat">
+            <small>Agility</small>
+            <div class="bar"><i id="s-agility" style="width:40%"></i></div>
+          </div>
+        </div>
+        <div class="stat-row" style="margin-top:8px">
+          <div class="stat">
+            <small>Intelligence</small>
+            <div class="bar"><i id="s-intel" style="width:48%"></i></div>
+          </div>
+          <div class="stat">
+            <small>Endurance</small>
+            <div class="bar"><i id="s-end" style="width:62%"></i></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="small-muted">Time Online</div>
+            <div class="time-online" id="time-online">00:00:00</div>
+          </div>
+          <div style="text-align:right">
+            <div class="small-muted">EXP</div>
+            <div style="font-weight:800"> <span id="player-exp">8,420</span> / <span id="player-exp-next">12,000</span></div>
+          </div>
+        </div>
+
+        <hr style="border-color:rgba(255,255,255,0.02);margin:14px 0">
+        <div>
+          <div class="small-muted">Quick Stats</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <div class="badge-reward">HP <strong id="hp">420</strong></div>
+            <div class="badge-reward">SP <strong id="sp">28</strong></div>
+            <div class="badge-reward">Gold <strong id="gold">1,300</strong></div>
+          </div>
+        </div>
+
+        <hr style="border-color:rgba(255,255,255,0.02);margin:14px 0">
+        <div>
+          <div class="small-muted">Quick Actions</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn btn-sm btn-outline-light" id="add-quest">+ New Quest</button>
+            <button class="btn btn-sm btn-outline-light" id="import-btn">Import</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT: Quests / Activity -->
+      <main>
+        <section class="panel neon-border">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h3 style="margin:0">Quests</h3>
+              <div class="small-muted">New, completed and expired quests — realistic rewards you can map to real life</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <select id="filter" class="form-select form-select-sm" style="width:170px">
+                <option value="all">All statuses</option>
+                <option value="new">New / Available</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="quests" class="quests-list" aria-live="polite" style="margin-top:14px">
+            <!-- quests inserted here -->
+          </div>
+
+        </section>
+
+        <!-- Add quest form (hidden by default) -->
+        <section id="add-quest-panel" class="panel" style="margin-top:12px;display:none">
+          <h5 style="margin-top:0">Create new quest</h5>
+          <form id="quest-form" class="form-compact">
+            <div class="mb-2">
+              <input id="q-title" placeholder="Quest title (eg. Run 5km)" required />
+            </div>
+            <div class="mb-2">
+              <textarea id="q-desc" rows="2" placeholder="Short description" required></textarea>
+            </div>
+            <div class="mb-2" style="display:flex;gap:8px">
+              <input id="q-reward-amt" placeholder="Reward amount (XP)" />
+              <select id="q-reward-type">
+                <option value="xp">XP</option>
+                <option value="gold">Gold</option>
+                <option value="badge">Badge</option>
+              </select>
+              <input id="q-expiry-days" type="number" placeholder="Expires in (days)" style="width:120px" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm btn-success" type="submit">Create Quest</button>
+              <button id="cancel-create" class="btn btn-sm btn-outline-light" type="button">Cancel</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- export / import UI (hidden file input) -->
+        <input id="import-file" type="file" accept="application/json" style="display:none" />
+      </main>
+    </div>
+  </div>
+
+  <script>
+    /************************************************************************
+     * Sample front-end solo-style "system" UI. Everything is client-side
+     * - Uses localStorage to persist user & quests so you can try in real life
+     * - Designed to be easy to plug into Django later: see comments below
+     ************************************************************************/
+
+    // -----------------
+    // Sample data (replace with Django template values later)
+    // Replace these values in server-side templates or fetch over an API
+    // e.g. in Django: const sampleUser = { name: "{{ user.username }}", level: {{ user.level }} }
+    const sampleUser = {
+      name: 'Rahul J',
+      initials: 'RJ',
+      level: 12,
+      class: 'Shadow Hunter',
+      exp: 8420,
+      expNext: 12000,
+      hp: 420,
+      sp: 28,
+      gold: 1300,
+      stats: { strength:55, agility:40, intelligence:48, endurance:62 }
+    };
+
+    const sampleQuests = [
+      { id: 'q1', title: 'Morning Run', desc: 'Run 5 km (outdoor or treadmill)', status:'new', reward: {type:'xp', amount:200}, createdAt: new Date().toISOString(), expiry: new Date(Date.now()+1000*60*60*24*2).toISOString() },
+      { id: 'q2', title: 'Read Research Paper', desc: 'Read and annotate one ML research paper', status:'active', reward:{type:'xp', amount:350}, createdAt: new Date(Date.now()-1000*60*60*24*2).toISOString(), expiry: new Date(Date.now()+1000*60*60*24*1).toISOString() },
+      { id: 'q3', title: 'Weekly Code Kata', desc: 'Solve 3 algorithmic problems', status:'completed', reward:{type:'gold', amount:100}, createdAt: new Date(Date.now()-1000*60*60*24*8).toISOString(), completedAt: new Date(Date.now()-1000*60*60*24*6).toISOString(), expiry: new Date(Date.now()-1000*60*60*24*5).toISOString() },
+      { id: 'q4', title: 'Declutter Workspace', desc: 'Organize desk and notes for the week', status:'expired', reward:{type:'badge', amount:'Tidiness'}, createdAt: new Date(Date.now()-1000*60*60*24*10).toISOString(), expiry: new Date(Date.now()-1000*60*60*24*4).toISOString() }
+    ];
+
+    // -----------------
+    // Utilities
+    function $(sel){return document.querySelector(sel)}
+    function $all(sel){return Array.from(document.querySelectorAll(sel))}
+    function uid(prefix='id'){return prefix + Math.random().toString(36).slice(2,9)}
+
+    // Persist & load
+    function saveState(){
+      localStorage.setItem('sl_user', JSON.stringify(sampleUser))
+      localStorage.setItem('sl_quests', JSON.stringify(quests))
+    }
+    function loadState(){
+      const u = localStorage.getItem('sl_user')
+      const q = localStorage.getItem('sl_quests')
+      if(u){
+        try{Object.assign(sampleUser, JSON.parse(u))}catch(e){}
+      }
+      if(q){
+        try{quests = JSON.parse(q)}catch(e){quests = sampleQuests.slice();}
+      } else {
+        quests = sampleQuests.slice();
+      }
+    }
+
+    // -----------------
+    // Render functions
+    function renderProfile(){
+      $('#player-name').textContent = sampleUser.name
+      $('#avatar').textContent = (sampleUser.initials||sampleUser.name.split(' ').map(n=>n[0]).slice(0,2).join('')).toUpperCase()
+      $('#player-level').textContent = sampleUser.level
+      $('#player-class').textContent = 'Class: ' + sampleUser.class
+      $('#player-exp').textContent = sampleUser.exp.toLocaleString()
+      $('#player-exp-next').textContent = sampleUser.expNext.toLocaleString()
+      $('#hp').textContent = sampleUser.hp
+      $('#sp').textContent = sampleUser.sp
+      $('#gold').textContent = sampleUser.gold
+      $('#s-strength').style.width = sampleUser.stats.strength + '%'
+      $('#s-agility').style.width = sampleUser.stats.agility + '%'
+      $('#s-intel').style.width = sampleUser.stats.intelligence + '%'
+      $('#s-end').style.width = sampleUser.stats.endurance + '%'
+    }
+
+    function formatDateISO(iso){
+      if(!iso) return '--'
+      const d = new Date(iso)
+      return d.toLocaleString()
+    }
+
+    function createQuestNode(q){
+      const el = document.createElement('div')
+      el.className = 'quest'
+      const isNew = q.status === 'new'
+      const isCompleted = q.status === 'completed'
+      const isExpired = q.status === 'expired'
+      el.innerHTML = `
+        <div class="meta">
+          <div class="title">${escapeHtml(q.title)}</div>
+          <div class="small-muted">${escapeHtml(q.desc)}</div>
+          <div class="tags">
+            <div class="badge-reward">Reward: ${renderReward(q.reward)}</div>
+            <div class="small-muted">Created: ${formatDateISO(q.createdAt)}</div>
+            <div class="small-muted">Expires: ${formatDateISO(q.expiry)}</div>
+          </div>
+        </div>
+        <div class="actions">
+          <div>
+            <div class="status-pill ${isNew? 'status-new': isCompleted? 'status-completed': isExpired? 'status-expired':''}">${q.status.toUpperCase()}</div>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            ${isCompleted? `<button class='btn btn-sm btn-outline-light' data-id='${q.id}' disabled>Completed</button>` : `<button class='btn btn-sm btn-success' data-action='complete' data-id='${q.id}'>Complete</button>`}
+            <button class='btn btn-sm btn-outline-light' data-action='view' data-id='${q.id}'>View</button>
+          </div>
+        </div>
+      `
+      // attach events
+      setTimeout(()=>{
+        const completeBtn = el.querySelector("button[data-action='complete']")
+        if(completeBtn) completeBtn.addEventListener('click',()=>{ markComplete(q.id) })
+        const viewBtn = el.querySelector("button[data-action='view']")
+        if(viewBtn) viewBtn.addEventListener('click',()=>{ alert('Quest: '+q.title + '\n\n' + q.desc) })
+      }, 10)
+      return el
+    }
+
+    function renderReward(r){
+      if(!r) return '--'
+      if(r.type === 'xp') return `${r.amount} XP`
+      if(r.type === 'gold') return `${r.amount} Gold`
+      if(r.type === 'badge') return `${r.amount} Badge`
+      return ''
+    }
+
+    function escapeHtml(s){return String(s).replace(/[&<>\"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]})}
+
+    function renderQuests(filter='all'){
+      expireOldQuests()
+      const target = $('#quests')
+      target.innerHTML = ''
+      const list = quests.filter(q=> filter === 'all' ? true: (q.status === filter))
+      if(list.length === 0){
+        target.innerHTML = '<div class="small-muted">No quests for this filter</div>'
+        return
+      }
+      list.sort((a,b)=> new Date(a.createdAt) - new Date(b.createdAt))
+      list.forEach(q=> target.appendChild(createQuestNode(q)))
+    }
+
+    // -----------------
+    // Quest state changes
+    function markComplete(id){
+      const q = quests.find(x=>x.id===id)
+      if(!q) return
+      q.status = 'completed'
+      q.completedAt = new Date().toISOString()
+      // give reward to player (simple example)
+      if(q.reward && q.reward.type === 'xp') sampleUser.exp += Number(q.reward.amount || 0)
+      if(q.reward && q.reward.type === 'gold') sampleUser.gold += Number(q.reward.amount || 0)
+      saveState(); renderProfile(); renderQuests($('#filter').value)
+    }
+
+    function expireOldQuests(){
+      const now = Date.now()
+      let changed = false
+      quests.forEach(q=>{
+        if(q.status !== 'expired' && q.expiry && new Date(q.expiry).getTime() < now){
+          q.status = 'expired'
+          changed = true
+        }
+      })
+      if(changed) saveState()
+    }
+
+    // -----------------
+    // Online timer
+    let onlineInterval = null
+    function updateLocalTime(){ $('#local-time').textContent = new Date().toLocaleString() }
+    function startOnlineTimer(startTs){
+      localStorage.setItem('sl_online_start', startTs)
+      if(onlineInterval) clearInterval(onlineInterval)
+      onlineInterval = setInterval(()=>{
+        const start = Number(localStorage.getItem('sl_online_start')||0)
+        if(!start) { $('#time-online').textContent = '00:00:00'; return }
+        const diff = Date.now() - start
+        const hh = String(Math.floor(diff/3600000)).padStart(2,'0')
+        const mm = String(Math.floor(diff%3600000/60000)).padStart(2,'0')
+        const ss = String(Math.floor(diff%60000/1000)).padStart(2,'0')
+        $('#time-online').textContent = `${hh}:${mm}:${ss}`
+      }, 1000)
+    }
+
+    function stopOnlineTimer(){
+      localStorage.removeItem('sl_online_start')
+      if(onlineInterval) clearInterval(onlineInterval)
+      onlineInterval = null
+      $('#time-online').textContent = '00:00:00'
+    }
+
+    // -----------------
+    // UI wiring
+    let quests = []
+    loadState()
+    renderProfile()
+    renderQuests()
+    updateLocalTime()
+    setInterval(updateLocalTime, 1000)
+
+    // Restore timer
+    if(localStorage.getItem('sl_online_start')){
+      $('#toggle-online').textContent = 'Go Offline'
+      startOnlineTimer(Number(localStorage.getItem('sl_online_start')))
+    }
+
+    $('#toggle-online').addEventListener('click',()=>{
+      if(localStorage.getItem('sl_online_start')){ // go offline
+        stopOnlineTimer(); $('#toggle-online').textContent = 'Go Online'
+      } else { // go online
+        localStorage.setItem('sl_online_start', Date.now())
+        $('#toggle-online').textContent = 'Go Offline'
+        startOnlineTimer(Number(localStorage.getItem('sl_online_start')))
+      }
+    })
+
+    $('#filter').addEventListener('change',(e)=>{ renderQuests(e.target.value) })
+
+    $('#add-quest').addEventListener('click',()=>{ $('#add-quest-panel').style.display = 'block'; window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}) })
+    $('#cancel-create').addEventListener('click',()=>{ $('#add-quest-panel').style.display = 'none' })
+
+    $('#quest-form').addEventListener('submit',(ev)=>{
+      ev.preventDefault()
+      const title = $('#q-title').value.trim()
+      const desc = $('#q-desc').value.trim()
+      const rewardType = $('#q-reward-type').value
+      const rewardAmt = $('#q-reward-amt').value
+      const expiryDays = Number($('#q-expiry-days').value) || 3
+      const newQ = { id: uid('q'), title, desc, status:'new', reward:{type:rewardType, amount: rewardType === 'xp' || rewardType === 'gold' ? Number(rewardAmt) : rewardAmt}, createdAt: new Date().toISOString(), expiry: new Date(Date.now() + expiryDays*24*3600*1000).toISOString() }
+      quests.push(newQ)
+      saveState(); renderQuests($('#filter').value)
+      $('#quest-form').reset(); $('#add-quest-panel').style.display = 'none'
+    })
+
+    // export / import
+    $('#export-btn').addEventListener('click', ()=>{
+      const data = { user: sampleUser, quests }
+      const blob = new Blob([JSON.stringify(data, null, 2)],{type:'application/json'})
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href=url; a.download = 'sl_export_'+ new Date().toISOString().replace(/[:.]/g,'-') +'.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
+    })
+    $('#import-btn').addEventListener('click', ()=> $('#import-file').click())
+    $('#import-file').addEventListener('change', async (e)=>{
+      const f = e.target.files[0]; if(!f) return
+      const txt = await f.text(); try{ const parsed = JSON.parse(txt); if(parsed.quests) { quests = parsed.quests; saveState(); renderQuests($('#filter').value); alert('Imported OK') } else alert('File format not recognized') }catch(err){alert('Invalid JSON')}
+    })
+
+    // basic expiry runner every minute
+    setInterval(expireOldQuests, 60000)
+
+    // small helper to simulate server-supplied data: call this from Django template with JSON
+    window.__sl_loadFromServer = function(serverJson){
+      // serverJson = { user: {...}, quests: [...] }
+      if(serverJson.user) Object.assign(sampleUser, serverJson.user)
+      if(Array.isArray(serverJson.quests)) quests = serverJson.quests
+      saveState(); renderProfile(); renderQuests($('#filter').value)
+    }
+
+  </script>
+  <!-- Bootstrap JS (bundle) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

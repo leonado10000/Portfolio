@@ -1,0 +1,79 @@
+<div class="section" id="head-section">
+    <style>
+        @media(max-width: 800px){
+            #head-container{
+                padding-top: 25px;
+                text-align: center;
+            }
+            #nav-bar-option{
+                text-align: center;
+                display: inline-block;
+                
+                -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: 400;
+                font-size: 15px;
+
+                border-radius: 25px;
+                min-width: fit-content;
+
+                margin-right: 5%;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+            .a-nav{
+                text-decoration: none;
+                transition: ease-out 300ms;
+                border-bottom: 2px solid white;
+            }
+        }
+        @media(min-width: 801px){
+            #head-container{
+                padding-top: 25px;
+                text-align: center;
+            }
+            #nav-bar-option{
+                text-align: center;
+                display: inline-block;
+                
+                -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: 400;
+                font-size: 15px;
+
+                border-radius: 25px;
+                min-width: 100px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+            .a-nav{
+                margin-left: 1%;
+                text-decoration: none;
+                transition: ease-out 100ms;
+                border-bottom: 2px solid white;
+            }
+            .a-nav:hover{
+                margin-top: 30px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid teal;
+                transition: ease-in 200ms;
+            }
+        }
+    </style>
+    
+    
+    <div id="head-container">
+        <a class="a-nav" href="{% url 'ind' %}">
+            <div id="nav-bar-option">Main</div>
+        </a>
+        <a class="a-nav" href="{% url 'projects' %}">
+            <div id="nav-bar-option">Ideas</div>
+        </a>
+        <a class="a-nav" href="{% url 'blog' %}">    
+            <div id="nav-bar-option">Blog</div>
+        </a>
+        <a class="a-nav" href="">    
+            <div id="nav-bar-option">Else</div>
+        </a>
+    </div>
+</div>

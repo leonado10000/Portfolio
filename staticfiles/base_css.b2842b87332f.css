@@ -1,0 +1,40 @@
+
+@media only screen and (min-width:800px)  {
+    body{
+        /* background-color: rgba(0, 0, 0, 0.547); */
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+    }
+
+    #buttons-block{
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    #content-block{
+        background-color: rgb(242, 244, 249);
+        padding-left: 5%;
+        padding-top: 2%;
+        padding-right: 5%;
+    }
+    #nav-buttons{
+        text-align: left;
+        font-size: 18px;
+        width: 100%;
+    }
+    #nav-buttons:hover{
+        background-color: rgb(242, 244, 249);
+    }
+    .general-box{
+        background-color: white;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        min-height: 100px;
+        min-width: 500px;
+        width: fit-content;
+
+        margin: 10px;
+        border-radius: 20px;
+    }
+}

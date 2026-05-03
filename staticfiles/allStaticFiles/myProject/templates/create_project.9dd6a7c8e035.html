@@ -1,0 +1,45 @@
+<h1>
+    Create Project
+</h1>
+
+<style>
+        .form-boxes{
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+        input,textarea{
+            -webkit-text-fill-color: black;
+        }
+</style>
+<form action="{% url 'myProject' %}" method="post">
+    {% csrf_token %}
+
+    <div class="mb-3 form-boxes">
+        <label for="exampleInputEmail1" class="form-label">Project Topic</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="Project-Topic">
+    </div>
+
+    <div class="mb-3 form-boxes">
+        <label for="exampleInputEmail1" class="form-label">Project Title</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="Project-Title">
+        <div id="emailHelp" class="form-text">Cannot be changed later.</div>
+    </div>
+
+    <div class="mb-3 form-boxes">
+        <label for="exampleInputEmail1" class="form-label">Project Small description</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Project-description"></textarea>
+    </div>
+    <div class="mb-3 form-boxes">
+        <label for="exampleInputEmail1" class="form-label">Start Date</label>
+        <input type="date"  class="form-control" id="exampleInputEmail1" name="start-date" aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text" >Leave empty for today.</div>
+
+        <label for="exampleInputEmail1" class="form-label">End Date</label>
+        <input type="date"  class="form-control" id="exampleInputEmail1" name="end-date" aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text" >Leave empty for No end date.</div>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

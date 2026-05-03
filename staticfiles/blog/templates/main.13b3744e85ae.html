@@ -1,0 +1,380 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>welcome to blog</title>
+</head>
+<body>
+
+    <style>
+        @media (max-width: 800px){
+            body{
+            height: min-content;
+            display: grid;
+            background-color: rgb(34, 40, 49);
+            margin: 0;
+            overflow:auto; /* Change this to allow scrolling */
+            color: rgb(238, 238, 238);
+        }
+        }
+        @media (min-width:801px) {
+            body{
+            display: grid;
+            background-color: rgb(34, 40, 49);
+            margin: 0;
+            overflow: auto;
+            color: rgb(238, 238, 238);
+            }
+        }
+    </style>
+
+    <style>
+        @media(max-width: 800px){
+            #head-container{
+                padding-top: 25px;
+                padding-bottom: 50px;
+                text-align: center;
+            }
+            #nav-bar-option{
+                text-align: center;
+                display: inline-block;
+                color: rgba(255, 255, 255, 0.7);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: 400;
+                font-size: 15px;
+
+                border-radius: 25px;
+                min-width: fit-content;
+                margin-right: 5%;
+                padding-bottom: 5px;
+            }
+            .a-nav{
+                text-decoration: none;
+                transition: ease-out 300ms;
+            }
+            #site-head{
+                height: 60px;
+                color: rgb(0, 173, 181);
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                font-style: italic;
+                font-size: 35px;
+                text-align: center;
+                /* padding-top: 10px; */
+            }
+        }
+        @media(min-width: 801px){
+            #forehead{
+                display: grid;
+                grid-template-columns: 1fr 4fr;
+                padding-bottom: 25px;
+            }
+            #nav-bar-option{
+                text-align: center;
+                color: rgba(255, 255, 255, 0.7);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: 400;
+                font-size: 15px;
+                margin-left: 50px;
+                margin-right: 50px;
+            }
+            .a-nav{
+                margin-top: 30px;
+                display: inline-block;
+                text-decoration: none;
+                transition: ease-out 100ms;
+                border-bottom: 2px solid transparent;
+            }
+            .a-nav:hover{
+                border-bottom: 2px solid teal;
+                transition: ease-in 200ms;
+            }
+            #site-head{
+                margin-left: 10%;
+                height: 60px;
+                color: rgb(0, 173, 181);
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                font-style: italic;
+                font-size: 35px;
+                margin-right: 10%;
+                text-align: center;
+                /* padding-top: 10px; */
+            }
+        }
+    </style>
+
+    <div id="forehead">
+        <div id="site-head">ChatsApp</div>        
+        <div id="head-container">
+            <a class="a-nav" href="{% url 'ind' %}">
+                <div id="nav-bar-option">Main</div>
+            </a>
+            <a class="a-nav" href="https://i.pinimg.com/736x/45/1b/78/451b78a067553f9187093ce951f13049.jpg">
+                <div id="nav-bar-option">Ideas</div>
+            </a>
+            <a class="a-nav" href="{% url 'blog' topic_id %}">    
+                <div id="nav-bar-option">Blog</div>
+            </a>
+            <a class="a-nav" href="{% url 'else' %}">    
+                <div id="nav-bar-option">Else</div>
+            </a>
+        </div>
+    </div>
+
+    <style>
+        @media (max-width : 800px) {
+            #main-container{
+                height: min-content;
+                display: grid;
+                grid-template-rows: 1fr 3fr;
+            }
+            #rt-container {
+                overflow-y: scroll;
+                scroll-behavior: auto;
+                background-color: #1c1e22;
+            }
+            #section-texts {
+                flex: 1;
+                padding: 20px;
+                background-color: #2a2f32;
+            }
+            
+            .text-container {
+                padding: 10px;
+                margin-bottom: 15px;
+                background-color: #323739;
+                border-radius: 10px;
+                color: white;
+
+                display: grid;
+                grid-template-columns: 5fr 1fr;
+            }
+
+            /* Fixed input at the bottom */
+            #submit-container {
+                background-color: #1c1e22;
+                padding: 10px;
+                border-top: 1px solid #000;
+            }
+
+            #ip-box {
+                display: flex;
+                justify-content: space-between;
+                background-color: #40444b;
+                border-radius: 25px;
+                padding: 10px;
+            }
+
+            #ip-field {
+                flex: 1;
+                background: transparent;
+                border: none;
+                color: white;
+                padding: 5px 10px;
+                outline: none;
+                font-size: 16px;
+            }
+
+            #sbt-btn {
+                background-color: #009688;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 50%;
+                margin-left: 10px;
+            }
+        }
+        @media (min-width : 801px) {
+            #main-container{
+                display: grid;
+                grid-template-columns: 2fr 5fr;
+            }
+            /* Main chat container */
+            #rt-container {
+                display: flex;
+                flex-direction: column;
+                height: min-content;
+                background-color: #1c1e22;
+                border-left: 1px solid #000;
+            }
+
+            /* Scrollable chat history */
+            #section-texts {
+                flex: 1;
+                height: 400px;
+                overflow-y: scroll;
+                padding: 20px;
+                background-color: #2a2f32;
+                scroll-behavior: smooth;
+            }
+
+            .text-container {
+                padding: 10px;
+                margin-bottom: 15px;
+                background-color: #323739;
+                border-radius: 10px;
+                color: white;
+
+                display: grid;
+                grid-template-columns: 5fr 1fr;
+            }
+
+            /* Fixed input at the bottom */
+            #submit-container {
+                background-color: #1c1e22;
+                padding: 10px;
+                border-top: 1px solid #000;
+            }
+
+            #ip-box {
+                display: flex;
+                justify-content: space-between;
+                background-color: #40444b;
+                border-radius: 25px;
+                padding: 10px;
+            }
+
+            #ip-field {
+                flex: 1;
+                background: transparent;
+                border: none;
+                color: white;
+                padding: 5px 10px;
+                outline: none;
+                font-size: 16px;
+            }
+
+            #sbt-btn {
+                background-color: #009688;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 50%;
+                cursor: pointer;
+                margin-left: 10px;
+            }
+        }
+    </style>
+
+    <div id="main-container">
+        <div id="left-section" style="background-color: rgb(22, 23, 29);">
+            <style>
+                .topic-blocks{
+                    min-height: 150px;
+                    border-radius: 20px;
+                    margin: 5px;
+                    background-color: rgb(36, 37, 47);
+                }
+                .topic-custom{
+                    display: grid;
+                    grid-template-columns: 2fr 5fr;
+                }
+            </style>
+            {% for topic in topics %}
+                <a href="{% url 'blog' topic.id %}" class="topic-blocks topic-custom">
+                    <div><img style="max-height: 120px;max-width: 120px;border-radius: 20px;padding: 15px;" src="{{ topic.image_link }}" alt=""></div>
+                    <h3>
+                        <div>
+                            <div style="font-size: 15px;-webkit-text-fill-color: rgb(0, 242, 255);font-weight: 300;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
+                                {{ topic.id }}. {{ topic.name|capfirst }}
+                            </div>
+                            <br>
+                            <div style="font-size: 10px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-style: italic;-webkit-text-fill-color: darkgray;">
+                                SIZE : {{ topic.number_of_messages }} messages <br>
+                                LAST UPDATED :  {{ topic.last_updated }}
+                            </div>
+                        </div>
+                    </h3>
+                </a>
+            {% endfor %}
+        </div>
+
+        <div id="rt-container">
+            <div id="section-texts">
+                {% for message in data %}
+                    <div class="text-container">
+                        <div>
+                            <style>
+                                #txt-date{
+                                    font-size: 8px;
+                                    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                                    font-style: italic;
+                                    -webkit-text-fill-color: lightblue;
+                                }
+                                #txt{
+                                    font-size: 15px;
+                                    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                }
+                            </style>
+                            <div id="txt-date">
+                                <div id="ip-addr">
+                                    by: {{ message.sender }}</div>
+                                    {{ message.time }} <br>
+                                    {% if message.banned %}
+                                        <div style="background-color: red;width: max-content;">(BANNED)</div>
+                                    {% else %}
+                                    {% endif %}
+                            </div>
+                            {% if not message.banned or user.is_authenticated %}
+                            <div id="txt">{{ message.textfield|capfirst }}</div>
+                            {% else %}
+                                <div id="txt">[REDACTED]</div>
+                            {% endif %}
+                        </div>
+                        <div class="text-box">
+                            <form action="{% url 'blog' topic_id %}" method="post">
+                                {% if not message.banned or user.is_authenticated %}
+                                {% csrf_token %}
+                                <input type="hidden" name="message_id" value="{{ message.id }}">
+                                <button type="submit" style="border-radius: 50%;height: 40px;background-color: white;font-weight: 600;">🩵 {{ message.likes }}</button>
+                                {% else %}
+                                {% endif %}
+                            </form>
+                            <form action="{% url 'blog' topic_id %}" method="post">
+                                {% csrf_token %}
+                                {% if user.is_authenticated %}
+                                    <input type="hidden" name="delete_message_id" value="{{ message.id }}">
+                                    <input type="hidden" name="message_id" value="">
+                                    <button type="submit" style="border-radius: 50%;height: 40px;background-color: lightpink;font-weight: 600;">Delete</button>
+                                {% else %}
+                                {% endif %}
+                            </form>
+                                                        
+                            <form action="{% url 'ban' %}" method="post">
+                                {% csrf_token %}
+                                {% if user.is_authenticated %}
+                                    <input type="hidden" name="banning_ip" value="{{ message.sender }}">
+                                    <button type="submit" style="border-radius: 50%;height: 40px;background-color: rgb(94, 94, 94);font-weight: 600;">ban</button>
+                                {% else %}
+                                {% endif %}
+                            </form>
+                            
+                            <form action="{% url 'unban' %}" method="post">
+                                {% csrf_token %}
+                                {% if user.is_authenticated %}
+                                    <input type="hidden" name="banning_ip" value="{{ message.sender }}">
+                                    <button type="submit" style="border-radius: 50%;height: 40px;background-color: rgb(34, 120, 0);font-weight: 600;">unban</button>
+                                {% else %}
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="submit-container">
+                <form id="section-submit" action="{% url 'blog' topic_id %}" method="post">
+                    {% csrf_token %}
+                    <div id="ip-box">
+                        
+                        <input type="hidden" name="message_id" value="">
+                        <input type="hidden" name="delete_message_id" value="">
+                        <input type="hidden" name="topic_id" value="{{ topic_id }}">
+                        <input id="sbt-btn" type="submit" value="📨">
+                        <textarea id="ip-field" name="a" placeholder="Enter Here ..."></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
