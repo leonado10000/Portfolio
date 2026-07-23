@@ -68,41 +68,35 @@ import urllib.request
 from datetime import timedelta
 from django.utils import timezone
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Min, Max, F
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import bronzelogs, SilverLogs, FlaggedIP
+from .models import bronzelogs, IPProfile
 
 logger = logging.getLogger(__name__)
 
 # --- Dashboard Views ---
 
-@staff_member_required # Ensures only you (admin) can access this page
+@staff_member_required
 def logs_dashboard(request):
     """
     Renders the main dashboard page at /cc/logs/
     """
-    # 1. High-level Stats
-    total_logs = SilverLogs.objects.count()
+    total_logs = IPProfile.objects.aggregate(total=Count('id'))['total'] or 0
     
-    # 2. IP Profiles
-    flagged_ips = FlaggedIP.objects.all().order_by('-updated_at')
+    profiles = IPProfile.objects.all().order_by('-last_visit')
     
-    # Calculate bot percentage (using python logic based on the is_bot property)
-    auto_bots = [ip for ip in flagged_ips if ip.is_bot]
-    bot_percentage = round((len(auto_bots) / max(len(flagged_ips), 1)) * 100, 1)
-
-    # 3. Recent Activity (Stream)
-    recent_logs = SilverLogs.objects.select_related('ip_profile').order_by('-timestamp')[:50]
+    auto_bots = [p for p in profiles if p.is_bot]
+    bot_percentage = round((len(auto_bots) / max(len(profiles), 1)) * 100, 1)
 
     context = {
-        'total_logs': total_logs,
+        'total_logs': total_logs, # Now represents total UNIQUE IPs tracked
         'bot_percentage': bot_percentage,
-        'flagged_ips': flagged_ips[:10], # Top 10 most recently updated IPs
-        'recent_logs': recent_logs,
+        'flagged_ips': profiles[:20], 
+        'recent_logs': [], # Removed detailed stream since we delete raw logs
     }
     return render(request, 'logs/dashboard.html', context)
 
@@ -111,81 +105,60 @@ def logs_dashboard(request):
 def map_data_api(request):
     """
     Provides GeoJSON/JSON data for the frontend Leaflet.js world map.
-    Returns latitude and longitude for UNIQUE IPs, colored by bot status,
-    and includes total visit counts.
     """
-    # Group by IP profile to get unique locations and visit counts
-    unique_locations = SilverLogs.objects.exclude(latitude__isnull=True).values(
-        'ip_profile__ip_address', 
-        'ip_profile__is_manual_flagged',
-        'ip_profile__is_auto_flagged',
-        'city', 
-        'country', 
-        'latitude', 
-        'longitude'
-    ).annotate(
-        visit_count=Count('id'),
-        # Get the most recent action message for context
-        # (Django's ORM makes getting latest per group tricky without subqueries, 
-        # so we'll just omit it here to keep the query fast, or you could use a Max(timestamp))
+    profiles = IPProfile.objects.exclude(latitude__isnull=True).values(
+        'ip_address', 'is_manual_flagged', 'is_auto_flagged', 
+        'city', 'country', 'latitude', 'longitude', 'total_visits'
     )
     
     map_points = []
-    for loc in unique_locations:
-        # Reconstruct the is_bot property logic manually since we are using .values()
-        is_manual = loc['ip_profile__is_manual_flagged']
-        is_bot = is_manual if is_manual is not None else loc['ip_profile__is_auto_flagged']
+    for p in profiles:
+        is_manual = p['is_manual_flagged']
+        is_bot = is_manual if is_manual is not None else p['is_auto_flagged']
         
         map_points.append({
-            "lat": loc['latitude'],
-            "lng": loc['longitude'],
-            "ip": loc['ip_profile__ip_address'],
-            "city": loc['city'],
-            "country": loc['country'],
+            "lat": p['latitude'],
+            "lng": p['longitude'],
+            "ip": p['ip_address'],
+            "city": p['city'],
+            "country": p['country'],
             "is_bot": is_bot,
-            "visit_count": loc['visit_count']
+            "visit_count": p['total_visits']
         })
         
     return JsonResponse({"points": map_points})
 
 
 @staff_member_required
-@csrf_exempt # In a real app, use proper CSRF tokens for POST requests
+@csrf_exempt
 def toggle_manual_flag(request):
     """
     API endpoint for the dashboard to manually flag/unflag an IP.
-    Expects JSON: {"ip_address": "57.148.x.x", "status": true/false/null, "notes": "..."}
     """
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             ip_address = data.get('ip_address')
-            # status: True (Bot), False (Human), None (Let Auto decide)
             status = data.get('status') 
-            notes = data.get('notes', '')
 
-            ip_profile, created = FlaggedIP.objects.get_or_create(ip_address=ip_address)
+            profile = get_object_or_404(IPProfile, ip_address=ip_address)
             
-            # Map JS frontend values to Python boolean/None
             if status == 'true' or status is True:
-                ip_profile.is_manual_flagged = True
+                profile.is_manual_flagged = True
             elif status == 'false' or status is False:
-                ip_profile.is_manual_flagged = False
+                profile.is_manual_flagged = False
             else:
-                ip_profile.is_manual_flagged = None
+                profile.is_manual_flagged = None
                 
-            ip_profile.notes = notes
-            ip_profile.save()
-
-            return JsonResponse({"success": True, "current_bot_status": ip_profile.is_bot})
+            profile.save()
+            return JsonResponse({"success": True, "current_bot_status": profile.is_bot})
 
         except Exception as e:
              return JsonResponse({"error": str(e)}, status=400)
-             
     return JsonResponse({"error": "POST required"}, status=405)
 
 
-# --- Helper Functions for Bot Detection ---
+# --- Helper Functions ---
 
 def get_geoip_data(ip_address):
     """
@@ -216,142 +189,115 @@ def get_geoip_data(ip_address):
     
     return {"country": "Unknown", "city": "Unknown", "latitude": None, "longitude": None}
 
-def analyze_for_bot(ip_address, current_log_timestamp):
+def analyze_for_bot(ip_address, batch_count, current_total_visits):
     """
-    Basic Bot Detection Heuristics.
-    Returns: (is_bot: bool, reason: str or None)
+    Revised bot detection based on aggregate profile data rather than checking individual logs.
     """
-    # Heuristic 1: High Velocity (Rate Limiting)
-    # If an IP has made more than 30 requests in the last 1 minute, flag it.
-    one_minute_ago = current_log_timestamp - timedelta(minutes=1)
-    
-    # Querying the Bronze logs directly to count recent activity for this IP
-    recent_requests = bronzelogs.objects.filter(
-        userip=ip_address,
-        timestamp__gte=one_minute_ago
-    ).count()
-
-    if recent_requests > 30:
-        return True, f"High Velocity: {recent_requests} req/min"
-
-    # Heuristic 2: Known Bot Signatures (if User-Agent was logged)
-    # If you later add a User-Agent column to BronzeLogs, check it here:
-    # bot_signatures = ['bot', 'crawl', 'spider', 'slurp']
-    # if any(sig in user_agent.lower() for sig in bot_signatures):
-    #     return True, "User-Agent Signature"
+    # If this batch alone brought in over 50 requests for this IP, it's highly suspicious.
+    if batch_count > 50:
+        return True, f"Velocity spike: {batch_count} reqs in single batch"
+        
+    # If lifetime visits exceed 1000, probably a scraper.
+    if current_total_visits + batch_count > 1000:
+        return True, f"Excessive lifetime visits: > 1000"
 
     return False, None
 
 
 # --- The Main Vercel Cron View ---
 
-@csrf_exempt # Required if Vercel calls this via POST without a CSRF token
+@csrf_exempt
 def process_bronze_to_silver(request):
     """
-    This view is intended to be called by a Vercel Cron Job (e.g., every 5 minutes).
-    It reads unprocessed Bronze logs, enriches them, runs bot detection, 
-    and saves them to the Silver layer.
+    Groups raw bronze logs into IP profiles, updating counts and timestamps.
+    Deletes the raw logs afterwards to save database space.
     """
-    
-    # Security: Ensure this endpoint is only accessible via Vercel Cron or a valid admin
     auth_header = request.headers.get('Authorization')
     expected_secret = getattr(settings, 'VERCEL_CRON_SECRET', None)
-    
     if expected_secret and auth_header != f"Bearer {expected_secret}":
          return JsonResponse({"error": "Unauthorized"}, status=401)
 
-    # 1. Fetch Unprocessed Logs
-    # Evaluate to a list immediately and limit to 100 to prevent Vercel timeouts
-    unprocessed_logs = list(bronzelogs.objects.filter(
-        silverlogs__isnull=True
-    ).order_by('timestamp'))
+    # 1. Fetch raw logs and group by IP in the database
+    # This single query gets the count, min timestamp, and max timestamp for every IP
+    grouped_logs = bronzelogs.objects.values('userip').annotate(
+        batch_count=Count('id'),
+        first_in_batch=Min('timestamp'),
+        last_in_batch=Max('timestamp')
+    ) # Process up to 100 unique IPs per cron run
 
-    if not unprocessed_logs:
+    if not grouped_logs:
         return JsonResponse({"status": "success", "message": "No new logs to process", "processed_count": 0})
 
-    # --- NEW: GeoIP Caching Logic ---
-    # Find all unique IPs in this specific batch
-    unique_ips = set(log.userip for log in unprocessed_logs)
-    existing_geo_cache = {}
-    
-    # Query SilverLogs once for any existing geo data matching these IPs
-    known_silver_logs = SilverLogs.objects.filter(userip__in=unique_ips).values(
-        'userip', 'country', 'city', 'latitude', 'longitude'
-    )
+    processed_ips = 0
 
-    print(f"Processing {len(unprocessed_logs)} logs, with {len(unique_ips)} unique IPs. Found {known_silver_logs.count()} existing geo records in Silver layer.")
-    
-    # Populate the cache with database values
-    for loc in known_silver_logs:
-        if loc['userip'] not in existing_geo_cache:
-            existing_geo_cache[loc['userip']] = {
-                'country': loc['country'],
-                'city': loc['city'],
-                'latitude': loc['latitude'],
-                'longitude': loc['longitude']
-            }
-    # --------------------------------
-
-    silver_records_to_create = []
-    processed_count = 0
-
-    # We use a transaction to ensure database integrity if the batch fails halfway
     try:
         with transaction.atomic():
-            for bronze_log in unprocessed_logs:
-                print(f"Processing Bronze Log ID {bronze_log.pk} from IP {bronze_log.userip} at {bronze_log.timestamp}")
-                
-                # A. Enrichment (GeoIP)
-                ip = bronze_log.userip
-                
-                # Check our cache (DB results + previous API calls in this batch) before hitting the API
-                if ip in existing_geo_cache:
-                    geo_data = existing_geo_cache[ip]
-                    print(f"Using cached GeoIP data for {ip}: {geo_data}")
-                else:
-                    print(f"Fetching GeoIP data for {ip} from API...")
-                    geo_data = get_geoip_data(ip)
-                    # Add to cache so subsequent logs in this batch with the same IP skip the API
-                    existing_geo_cache[ip] = geo_data
-                
-                # B. Bot Detection & Profile Linking
-                is_bot, bot_reason = analyze_for_bot(bronze_log.userip, bronze_log.timestamp)
-                
-                # Get or create the IP profile
-                ip_profile, created = FlaggedIP.objects.get_or_create(ip_address=bronze_log.userip)
-                
-                # If the heuristic detected a bot, update the profile (if not already flagged)
-                if is_bot and not ip_profile.is_auto_flagged:
-                    ip_profile.is_auto_flagged = True
-                    ip_profile.auto_flag_reason = bot_reason
-                    ip_profile.save()
-                
-                # C. Prepare Silver Record
-                # We instantiate the object but don't save it to the DB yet (for bulk_create)
-                silver_record = SilverLogs(
-                    bronze_ref=bronze_log,
-                    ip_profile=ip_profile,
-                    userip=bronze_log.userip,
-                    actionmessage=bronze_log.actionmessage,
-                    timestamp=bronze_log.timestamp,
-                    country=geo_data.get('country'),
-                    city=geo_data.get('city'),
-                    latitude=geo_data.get('latitude'),
-                    longitude=geo_data.get('longitude')
-                )
-                silver_records_to_create.append(silver_record)
-                processed_count += 1
+            for log_data in grouped_logs:
+                ip = log_data['userip']
+                batch_count = log_data['batch_count']
+                first_ts = log_data['first_in_batch']
+                last_ts = log_data['last_in_batch']
 
-            # 2. Bulk Insert to Silver layer
-            # bulk_create is vastly more efficient than calling .save() 100 times.
-            SilverLogs.objects.bulk_create(silver_records_to_create)
+                # Try to find existing profile
+                profile = IPProfile.objects.filter(ip_address=ip).first()
+
+                if profile:
+                    # UPDATE EXISTING PROFILE
+                    
+                    # 1. Grab the current integer value before we overwrite it with an F() expression
+                    current_visits_int = profile.total_visits
+                    
+                    # 2. Now it's safe to assign the F() expression for the database update
+                    profile.total_visits = F('total_visits') + batch_count
+                    
+                    # Keep the absolute earliest first_visit
+                    if first_ts < profile.first_visit:
+                        profile.first_visit = first_ts
+                    # Keep the absolute latest last_visit
+                    if last_ts > profile.last_visit:
+                        profile.last_visit = last_ts
+                        
+                    # 3. Pass the integer we grabbed earlier to the bot analyzer
+                    is_bot, reason = analyze_for_bot(ip, batch_count, current_visits_int)
+                    
+                    if is_bot and not profile.is_auto_flagged:
+                        profile.is_auto_flagged = True
+                        profile.auto_flag_reason = reason
+                        
+                    profile.save(update_fields=['total_visits', 'first_visit', 'last_visit', 'is_auto_flagged', 'auto_flag_reason', 'updated_at'])
+                
+                else:
+                    # CREATE NEW PROFILE
+                    # Only do the slow GeoIP lookup if we've never seen this IP before
+                    geo_data = get_geoip_data(ip)
+                    is_bot, reason = analyze_for_bot(ip, batch_count, 0)
+                    
+                    IPProfile.objects.create(
+                        ip_address=ip,
+                        total_visits=batch_count,
+                        first_visit=first_ts,
+                        last_visit=last_ts,
+                        country=geo_data.get('country'),
+                        city=geo_data.get('city'),
+                        latitude=geo_data.get('latitude'),
+                        longitude=geo_data.get('longitude'),
+                        is_auto_flagged=is_bot,
+                        auto_flag_reason=reason
+                    )
+                
+                processed_ips += 1
+
+            # 3. Cleanup: Delete the raw logs we just processed
+            # We delete any bronze log matching the IPs we just handled, up to the max timestamp we processed
+            # This prevents deleting a log that came in *during* this cron execution
+            ips_processed = [log['userip'] for log in grouped_logs]
+            bronzelogs.objects.filter(userip__in=ips_processed, timestamp__lte=last_ts).delete()
 
     except Exception as e:
-        logger.error(f"Error processing logs: {e}")
+        logger.error(f"Error processing profiles: {e}")
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({
         "status": "success", 
-        "message": f"Successfully processed {processed_count} logs",
-        "processed_count": processed_count
+        "message": f"Successfully processed and aggregated {processed_ips} unique IPs",
     })
