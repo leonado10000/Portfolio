@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Analytics & Bot Map</title>
+    
+    <!-- Tailwind CSS (Play CDN for rapid prototyping/single file) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    
+    <!-- Leaflet JS & CSS for the World Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            z-index: 1; /* Keep map below Tailwind modals/dropdowns if any */
+        }
+        
+        /* Custom map marker styles */
+        .bot-marker {
+            background-color: #ef4444; /* Tailwind red-500 */
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+        
+        .human-marker {
+            background-color: #22c55e; /* Tailwind green-500 */
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-6">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-end pb-4 border-b border-gray-300">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Traffic Overview</h1>
+                <p class="text-sm text-gray-500 mt-1">Live monitoring of portfolio visitors and bot activity</p>
+            </div>
+            <div class="text-right">
+                <!-- Using Django template variables injected from views.py -->
+                <span class="text-sm text-gray-500">Total Logs Processed:</span>
+                <span class="text-2xl font-bold text-blue-600 block">{{ total_logs|default:"0" }}</span>
+            </div>
+        </header>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-500 text-sm font-medium">Bot Traffic Estimate</h3>
+                <!-- Assumes 'bot_percentage' comes from Django context -->
+                <p class="text-3xl font-bold text-red-500 mt-2">{{ bot_percentage|default:"0" }}%</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-500 text-sm font-medium">Top Activity</h3>
+                <p class="text-xl font-semibold text-gray-700 mt-2 truncate">Homepage / Portfolio</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-500 text-sm font-medium">Pipeline Status</h3>
+                <p class="text-xl font-semibold text-green-600 mt-2 flex items-center">
+                    <span class="h-3 w-3 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                    Cron Active
+                </p>
+            </div>
+        </div>
+
+        <!-- The Interactive Map -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-800">Global Traffic Map</h2>
+                <div class="flex space-x-4 text-sm">
+                    <span class="flex items-center"><span class="h-3 w-3 rounded-full bg-green-500 inline-block mr-2 border border-white shadow-sm"></span> Human</span>
+                    <span class="flex items-center"><span class="h-3 w-3 rounded-full bg-red-500 inline-block mr-2 border border-white shadow-sm"></span> Bot</span>
+                </div>
+            </div>
+            <!-- Leaflet mounts here -->
+            <div id="map"></div>
+        </div>
+
+        <!-- Two Column Layout for Logs and Profiles -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- IP Profiles (Flagging System) -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 border-b border-gray-200 bg-gray-50">
+                    <h2 class="text-lg font-semibold text-gray-800">IP Profiles & Flagging</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-500 border-b border-gray-200">
+                            <tr>
+                                <th class="px-4 py-3 font-medium">IP Address</th>
+                                <th class="px-4 py-3 font-medium">Status</th>
+                                <th class="px-4 py-3 font-medium text-right">Manual Override</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- Django Loop for flagged_ips -->
+                            {% for ip in flagged_ips %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-4 py-3 font-mono text-gray-700">{{ ip.ip_address }}</td>
+                                <td class="px-4 py-3">
+                                    {% if ip.is_bot %}
+                                        <span id="status-badge-{{ ip.ip_address|slugify }}" class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Bot</span>
+                                    {% else %}
+                                        <span id="status-badge-{{ ip.ip_address|slugify }}" class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Human</span>
+                                    {% endif %}
+                                    
+                                    {% if ip.is_auto_flagged and ip.is_manual_flagged is None %}
+                                        <div class="text-xs text-gray-400 mt-1" title="Auto-flag reason">{{ ip.auto_flag_reason|truncatechars:20 }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <!-- Buttons call a JS function that hits the toggle API -->
+                                    <button onclick="toggleFlag('{{ ip.ip_address }}', false)" class="text-xs bg-gray-100 hover:bg-green-100 hover:text-green-700 text-gray-600 px-3 py-1 rounded transition-colors mr-1">
+                                        Whitelist
+                                    </button>
+                                    <button onclick="toggleFlag('{{ ip.ip_address }}', true)" class="text-xs bg-gray-100 hover:bg-red-100 hover:text-red-700 text-gray-600 px-3 py-1 rounded transition-colors">
+                                        Flag
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="px-4 py-8 text-center text-gray-400 italic">No IP profiles tracked yet. Waiting for cron job.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Activity Stream -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 border-b border-gray-200 bg-gray-50">
+                    <h2 class="text-lg font-semibold text-gray-800">Recent Activity Stream (Silver)</h2>
+                </div>
+                <div class="overflow-x-auto max-h-[400px] overflow-y-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-500 border-b border-gray-200 sticky top-0 shadow-sm">
+                            <tr>
+                                <th class="px-4 py-3 font-medium">Time</th>
+                                <th class="px-4 py-3 font-medium">IP / Location</th>
+                                <th class="px-4 py-3 font-medium">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- Django Loop for recent_logs -->
+                            {% for log in recent_logs %}
+                            <!-- Highlight row slightly red if the profile thinks it's a bot -->
+                            <tr class="{% if log.ip_profile and log.ip_profile.is_bot %}bg-red-50/30 hover:bg-red-50/60{% else %}hover:bg-gray-50{% endif %} transition-colors">
+                                <td class="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{{ log.timestamp|date:"M d, H:i:s" }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="font-mono text-gray-700">{{ log.userip }}</div>
+                                    <div class="text-xs text-gray-400 mt-1">{{ log.city|default:"Unknown" }}, {{ log.country|default:"Unknown" }}</div>
+                                </td>
+                                <td class="px-4 py-3 text-gray-600 truncate max-w-[200px]" title="{{ log.actionmessage }}">
+                                    {{ log.actionmessage }}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="px-4 py-8 text-center text-gray-400 italic">No processed logs available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Map Initialization (Leaflet) ---
+        // Center on a rough world view (Lat 20, Lon 0, Zoom 2)
+        const map = L.map('map').setView([20.0, 0.0], 2);
+
+        // Add the base tile layer (OpenStreetMap)
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Function to create a custom marker based on bot status
+        function createCustomMarker(isBot) {
+            const className = isBot ? 'bot-marker' : 'human-marker';
+            return L.divIcon({
+                className: className,
+                iconSize: [12, 12], // Size of the dot
+                iconAnchor: [6, 6], // Center the dot
+                popupAnchor: [0, -6] // Popup opens slightly above
+            });
+        }
+
+        // --- 2. Fetch Map Data ---
+        // This fetches the data from your map_data_api view
+        async function loadMapData() {
+            try {
+                // Ensure this URL matches your urls.py (e.g. /cc/logs/api/map-data/)
+                // For local testing without backend, we'll bypass if URL doesn't exist.
+                const response = await fetch('{% url "logs:map_data" %}');
+                
+                if (!response.ok) {
+                    console.warn("Could not fetch map data (Ignore if testing HTML locally)");
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                // Clear existing markers if re-loading
+                // (In a real app, you might keep a reference to a layer group)
+
+                data.points.forEach(point => {
+                    if (point.lat && point.lng) {
+                        const marker = L.marker(
+                            [point.lat, point.lng], 
+                            { icon: createCustomMarker(point.is_bot) }
+                        ).addTo(map);
+
+                        // Popup content
+                        const statusLabel = point.is_bot 
+                            ? '<span class="text-red-600 font-bold">Bot</span>' 
+                            : '<span class="text-green-600 font-bold">Human</span>';
+                            
+                        marker.bindPopup(`
+                            <div class="text-sm">
+                                <strong>${point.ip}</strong><br>
+                                Location: ${point.city}, ${point.country}<br>
+                                Status: ${statusLabel}<br>
+                                Last Action: <span class="text-gray-500">${point.action}</span>
+                            </div>
+                        `);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error loading map data:", error);
+            }
+        }
+
+        // --- 3. Toggle Flag API Call ---
+        async function toggleFlag(ipAddress, isBot) {
+            try {
+                const response = await fetch('{% url "logs:toggle_flag" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Normally you need a CSRF token here for Django POST requests!
+                        // 'X-CSRFToken': getCookie('csrftoken') 
+                    },
+                    body: JSON.stringify({
+                        ip_address: ipAddress,
+                        status: isBot // true for bot, false for human
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        // Visual feedback: Update the badge in the table
+                        // Note: Using slugify equivalent for ID selection
+                        const safeId = ipAddress.replace(/\./g, '-'); 
+                        // You might need to adjust the ID logic depending on how Django's slugify handles IPs.
+                        // A simple reload is easiest for this prototype.
+                        window.location.reload(); 
+                    }
+                } else {
+                    alert('Error updating flag status.');
+                }
+            } catch (error) {
+                console.error("Error toggling flag:", error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Because Django template tags fail in standard HTML previewers, 
+            // we wrap the fetch in a try/catch. It will run normally in your Django environment.
+            loadMapData();
+        });
+
+    </script>
+</body>
+</html>
