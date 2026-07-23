@@ -111,24 +111,39 @@ def logs_dashboard(request):
 def map_data_api(request):
     """
     Provides GeoJSON/JSON data for the frontend Leaflet.js world map.
-    Returns latitude and longitude for all logs, colored by bot status.
+    Returns latitude and longitude for UNIQUE IPs, colored by bot status,
+    and includes total visit counts.
     """
-    # Fetch logs that have coordinates
-    logs_with_location = SilverLogs.objects.exclude(latitude__isnull=True).select_related('ip_profile')
+    # Group by IP profile to get unique locations and visit counts
+    unique_locations = SilverLogs.objects.exclude(latitude__isnull=True).values(
+        'ip_profile__ip_address', 
+        'ip_profile__is_manual_flagged',
+        'ip_profile__is_auto_flagged',
+        'city', 
+        'country', 
+        'latitude', 
+        'longitude'
+    ).annotate(
+        visit_count=Count('id'),
+        # Get the most recent action message for context
+        # (Django's ORM makes getting latest per group tricky without subqueries, 
+        # so we'll just omit it here to keep the query fast, or you could use a Max(timestamp))
+    )
     
     map_points = []
-    for log in logs_with_location:
-        # Determine if this specific log is flagged as a bot via its profile
-        is_bot = log.ip_profile.is_bot if log.ip_profile else False
+    for loc in unique_locations:
+        # Reconstruct the is_bot property logic manually since we are using .values()
+        is_manual = loc['ip_profile__is_manual_flagged']
+        is_bot = is_manual if is_manual is not None else loc['ip_profile__is_auto_flagged']
         
         map_points.append({
-            "lat": log.latitude,
-            "lng": log.longitude,
-            "ip": log.userip,
-            "city": log.city,
-            "country": log.country,
+            "lat": loc['latitude'],
+            "lng": loc['longitude'],
+            "ip": loc['ip_profile__ip_address'],
+            "city": loc['city'],
+            "country": loc['country'],
             "is_bot": is_bot,
-            "action": log.actionmessage
+            "visit_count": loc['visit_count']
         })
         
     return JsonResponse({"points": map_points})
@@ -239,8 +254,6 @@ def process_bronze_to_silver(request):
     """
     
     # Security: Ensure this endpoint is only accessible via Vercel Cron or a valid admin
-    # Vercel sends a specific header 'Authorization: Bearer <CRON_SECRET>'
-    # You must configure VERCEL_CRON_SECRET in your Django settings/env vars.
     auth_header = request.headers.get('Authorization')
     expected_secret = getattr(settings, 'VERCEL_CRON_SECRET', None)
     
@@ -248,14 +261,36 @@ def process_bronze_to_silver(request):
          return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # 1. Fetch Unprocessed Logs
-    # We find logs in Bronze that do not have a corresponding entry in Silver.
-    # Limit to a reasonable batch size (e.g., 100) to prevent Vercel serverless timeouts (usually 10-60s).
-    unprocessed_logs = bronzelogs.objects.filter(
+    # Evaluate to a list immediately and limit to 100 to prevent Vercel timeouts
+    unprocessed_logs = list(bronzelogs.objects.filter(
         silverlogs__isnull=True
-    ).order_by('timestamp')[:100]
+    ).order_by('timestamp'))
 
-    if not unprocessed_logs.exists():
+    if not unprocessed_logs:
         return JsonResponse({"status": "success", "message": "No new logs to process", "processed_count": 0})
+
+    # --- NEW: GeoIP Caching Logic ---
+    # Find all unique IPs in this specific batch
+    unique_ips = set(log.userip for log in unprocessed_logs)
+    existing_geo_cache = {}
+    
+    # Query SilverLogs once for any existing geo data matching these IPs
+    known_silver_logs = SilverLogs.objects.filter(userip__in=unique_ips).values(
+        'userip', 'country', 'city', 'latitude', 'longitude'
+    )
+
+    print(f"Processing {len(unprocessed_logs)} logs, with {len(unique_ips)} unique IPs. Found {known_silver_logs.count()} existing geo records in Silver layer.")
+    
+    # Populate the cache with database values
+    for loc in known_silver_logs:
+        if loc['userip'] not in existing_geo_cache:
+            existing_geo_cache[loc['userip']] = {
+                'country': loc['country'],
+                'city': loc['city'],
+                'latitude': loc['latitude'],
+                'longitude': loc['longitude']
+            }
+    # --------------------------------
 
     silver_records_to_create = []
     processed_count = 0
@@ -264,9 +299,20 @@ def process_bronze_to_silver(request):
     try:
         with transaction.atomic():
             for bronze_log in unprocessed_logs:
+                print(f"Processing Bronze Log ID {bronze_log.pk} from IP {bronze_log.userip} at {bronze_log.timestamp}")
                 
                 # A. Enrichment (GeoIP)
-                geo_data = get_geoip_data(bronze_log.userip)
+                ip = bronze_log.userip
+                
+                # Check our cache (DB results + previous API calls in this batch) before hitting the API
+                if ip in existing_geo_cache:
+                    geo_data = existing_geo_cache[ip]
+                    print(f"Using cached GeoIP data for {ip}: {geo_data}")
+                else:
+                    print(f"Fetching GeoIP data for {ip} from API...")
+                    geo_data = get_geoip_data(ip)
+                    # Add to cache so subsequent logs in this batch with the same IP skip the API
+                    existing_geo_cache[ip] = geo_data
                 
                 # B. Bot Detection & Profile Linking
                 is_bot, bot_reason = analyze_for_bot(bronze_log.userip, bronze_log.timestamp)
