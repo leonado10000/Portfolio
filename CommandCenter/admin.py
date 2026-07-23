@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import bronzelogs, SilverLogs
+from .models import bronzelogs, IPProfile
 
 class bronzelogsAdmin(admin.ModelAdmin):
     list_display = ('pk','userip', 'user', 'actionmessage', 'source', 'timestamp')
@@ -7,11 +7,11 @@ class bronzelogsAdmin(admin.ModelAdmin):
     list_filter = ('timestamp',)
     ordering = ('-timestamp',)
 
-class SilverlogsAdmin(admin.ModelAdmin):
-    list_display = ('pk','userip', 'actionmessage', 'timestamp', 'country', 'city', 'latitude', 'longitude')
-    search_fields = ('userip', 'actionmessage', 'country', 'city')
-    list_filter = ('timestamp', 'country', 'city')
-    ordering = ('-timestamp',)
+class IPProfileAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'ip_address', 'country', 'city', 'latitude', 'longitude')
+    search_fields = ('ip_address', 'country', 'city')
+    list_filter = ('country', 'city')
+    ordering = ('-pk',)
 
 admin.site.register(bronzelogs, bronzelogsAdmin)
-admin.site.register(SilverLogs, SilverlogsAdmin)
+admin.site.register(IPProfile, IPProfileAdmin)
